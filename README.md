@@ -28,3 +28,7 @@ GET API
 ``` shell
 curl -X GET https://noobpost.herokuapp.com/api/AHbVwS6J
 ```
+
+## Check it out [here](https://noobpaste.herokuapp.com)
+
+> NoobScience
