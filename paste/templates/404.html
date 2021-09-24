@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h1 class="h1 text" style="text-align: center; padding-top: 2%;">No such Paste Found</h1>
+    <div style="text-align: center;">
+        <img src="{{ url_for('static',filename='assets/svg/404.svg') }}" alt="" width=60% style="padding-top: 2%; padding-bottom: 2%;">
+    </div>
+    <div style="text-align: center;">
+        <button type="submit" id="language_btn"><a href="/create/text" class="btn_link">Make One</a></button>
+    </div>
+{% endblock %}
