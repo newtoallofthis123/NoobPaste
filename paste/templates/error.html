@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div>
+    <h2 class="title">Something Went Wrong! Ask the Dog: </h2>
+    <p class="lead text" style="padding-left: 1.2rem;">Dog Says: Hello Puney Hooman! Check out More about the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/{{ error_code }}" class="des_link_">{{ error_code }} Error</a>. Hope this is useful.</p>
+    <img src="https://http.dog/{{ error_code }}.jpg" alt="Dog Shows Error {{ error_code }}" style="width: 100%; height: 100%;">
+</div>
+
+{% endblock %}

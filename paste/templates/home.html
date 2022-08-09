@@ -2,57 +2,54 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <div style="outline: solid #fff 1px; outline-offset: -5px; color: white; margin-right: 12%; margin-left: 12%; padding-top: 12px; padding-bottom: 12px; margin-top: 12px;">
-        <h2 class="title_home">NoobPaste</h2>
-        <p class="lead" style="text-align: center; color: white;">Paste AnyTime, Anywhere (* condtions apply)😉</p>
-    </div>
-    <form action="/create_temp" method="post" id="language_select">
-        <p class="lead text" style="text-align: center;">{{ author }}, your last paste was <span><a href="/paste/{{ latest_url }}" class="link">{{ latest_url }}</a></span></p>
-        <select class="form-select" aria-label="Default select example" name="language">
-            <option selected>Select Language</option>
-            <option value="python">Python</option>
-            <option value="javascript">Javascript</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="sass">SASS</option>
-            <option value="java">Java</option>
-            <option value="lua">Lua</option>
-            <option value="go">Go</option>
-            <option value="php">PHP</option>
-            <option value="perl">Perl</option>
-            <option value="cython">Cython</option>
-            <option value="c">C</option>
-            <option value="cpp">C++</option>
-            <option value="ruby">Ruby</option>
-            <option value="shell">Shell</option>
-            <option value="powershell">Powershell</option>
-            <option value="markdown">Markdown</option>
-            <option value="text">Text</option>
-        </select>
-        <div style="text-align: center;">
-            <button type="submit" id="language_btn">Continue <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" fill="#defece" /></svg></button>
-            <p class="lead text" style="font-size: 12px;"><em>Please don't Store any sensitive information in NoobPaste. I am not responsible for the damage</em></p>
+    <div class="home">
+        <div style="margin-right: 12%; margin-left: 12%; padding-top: 2%; text-align: center;">
+            <!-- <h2 class="title_home">NoobPaste</h2> -->
+            <img src="{{ url_for('static',filename='assets/icons/text_icon.svg') }}" alt="">
+            <!-- <p class="lead" style="text-align: center; color: #1c1c1d;">Paste AnyTime, Anywhere (* condtions apply)😉</p> -->
         </div>
-    </form>
-    <div style="text-align: center;">
-        <p class="lead text" style="text-align: center;"><u>TitBit of the Load</u>:&nbsp&nbsp&nbsp<span>{{ joke }}</span></p>
+        <form action="/create_temp" method="post" id="language_select">
+            <p class="lead text" style="text-align: center;">{{ author }} Wanna See This : <span><a href="/paste/{{ latest_url }}" class="link">{{ latest_url }}</a></span></p>
+            <select class="form-select" aria-label="Default select example" name="language">
+                <option selected>Select Language</option>
+                <option value="python">Python</option>
+                <option value="javascript">Javascript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="markdown">Markdown</option>
+                <option value="text">Text</option>
+                <option value="lua">Lua</option>
+                <option value="java">Java</option>
+                <option value="json">JSON</option>
+                <option value="php">PHP</option>
+                <option value="xml">XML</option>
+                <option value="cpp">C++</option>
+                <option value="rust">Rust</option>
+            </select>
+            <div style="text-align: center;">
+                <button type="submit" id="language_btn">Continue <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" fill="#defece" /></svg></button>
+            </div>
+        </form>
+        <div style="text-align: center;">
+            <p class="lead text" style="text-align: center;"><u>TitBit of the Load</u>:&nbsp&nbsp&nbsp<span>{{ joke }}</span></p>
+        </div>
+        <!-- <p class="lead text" style="text-align: center; padding-top: 2%;">Learn More</p> -->
+        <div style="text-align: center; padding-bottom: 4%;"><button style="border: 0; background-color: rgba(245, 240, 240, 0);" class="animate__animated animate__pulse animate__repeat-3 3"><a href="#advantages"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#1c1c1d" class="bi bi-chevron-compact-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/></svg></a></button></div>
     </div>
-    <p class="lead text" style="text-align: center; padding-top: 2%;">Learn More</p>
-    <div style="text-align: center; padding-bottom: 4%;"><button style="border: 0; background-color: rgba(245, 240, 240, 0);" class="animate__animated animate__pulse animate__repeat-3 3"><a href="#advantages"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#fcfdec" class="bi bi-chevron-compact-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67z"/></svg></a></button></div>
-    <hr class="my-2" style="color: rgb(230, 229, 233);">
+    <hr class="my-2" style="color: rgb(23, 23, 24);">
     <h1 class="h1 text text-center" id="advantages" style="padding-top: 4%; padding-bottom: 4%;">Why Should You use NoobPaste</h1>
     <div class="accordion accordion-flush" id="accordionFlushExample" style="margin-left: 2%; margin-right: 2%;">
-        <div class="accordion-item" style="background-color: rgb(30, 30, 31);">
+        <div class="accordion-item" style="background-color: rgb(225, 225, 231);">
             <h2 class="accordion-header" id="flush-headingOne">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color: rgb(8, 242, 250);">
                 Fast and Secure
             </button>
             </h2>
             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body text">NoobPaste is written in python using the flask micro framework. It is very fast and is very secure. NoobPaste uses a database to store your data. The data is acessed using postgregsql. This setup should be relatively safe. Your Code is stored in a database which is queried everytime you make a request. Unless you have the exact 8 character string, accidentally stubling onto another code is quite rare. <em>Password protection is coming soon.</em> NoobPaste is deployed on heroku. Heroku servers take some time to activate but once they do, they are relatively fast. (sorry for using the word 'relatively' so much 🙂). NoobPaste is simply meant to act as a good alternative to pastebin and it is till in beta. So, use it with care and don't post anything sensitive on it.</div>
+                <div class="accordion-body text">NoobPaste is written in python using the flask micro framework. It is very fast and is very secure. NoobPaste uses a database to store your data. Even if you don't set a password, your data is encrypted with a key. The data is acessed using postgregsql. This setup should be relatively safe. Your Code is stored in a database which is queried everytime you make a request. Unless you have the exact 8 character string, accidentally stubling onto another code is quite rare. <em>Password Protection Available.</em> NoobPaste is deployed on heroku. Heroku servers take some time to activate but once they do, they are relatively fast. (sorry for using the word 'relatively' so much 🙂). NoobPaste is simply meant to act as a good alternative to pastebin and it is till in beta. So, use it with care and don't post anything sensitive on it.</div>
             </div>
         </div>
-        <div class="accordion-item" style="background-color: rgb(30, 30, 31);">
+        <div class="accordion-item" style="background-color: rgb(225, 225, 231);">
             <h2 class="accordion-header" id="flush-headingTwo">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" style="background-color: #e0ee22;">
                 <span>No Tracking and Logs</span>
@@ -62,7 +59,7 @@
                 <div class="accordion-body text">NoobPaste has a strict no tracking policy. NoobPaste can't track you because 1. It doesn't want to 2. It can't because I don't have the necessary skills to track 😄. You can rest assured NoobPaste won't track you.<br><br>NoobPaste does use cookies. When you create a new paste, your author field and paste_id is stored locally in the cookies. These cookies are only used when you visit NoobPaste, to show your author and last paste. These are not cross site cookies and are not harmfull for your computer. These are pretty much harmless and have no valid information. <em>NoobPaste has no reason to track you at all.</em> 😌</div>
             </div>
         </div>
-        <div class="accordion-item" style="background-color: rgb(30, 30, 31);">
+        <div class="accordion-item" style="background-color: rgb(225, 225, 231);">
             <h2 class="accordion-header" id="flush-headingThree">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree" style="background-color: rgb(241, 55, 30);">
                 Open Source
@@ -80,8 +77,8 @@
                     <img src="{{ url_for('static',filename='assets/svg/reading.svg') }}" class="card-img-top" alt="..." style="width: 220px;">
                     <div class="card-body">
                         <h5 class="card-title">Sit Back and Relax 😊</h5>
-                        <p class="card-text">Your Code is safe with us. Worried about your code? NoobPaste uses a hash of 8 strings to classify your code's url. Unless you share it, there is no way someone is seeing it. <em>Password coming soon</em></p>
-                        <a href="/create/text" class="btn btn-primary stretched-link">Play some music</a>
+                        <p class="card-text">Your Code is safe with us. Worried about your code? NoobPaste encrypts your paste so that no one, not even I can access it properly. Unless you share it, there is no way someone is seeing it. <em>Password Protection Available.</em></p>
+                        <a href="https://open.spotify.com/track/09PGubKAMryhOWv1LHpCYz?si=912446316f774e3c" class="btn btn-primary stretched-link">Music?</a>
                     </div>
                 </div>
             </div>
@@ -109,53 +106,50 @@
     </div>
     <hr class="my-2 text">
     <div style="padding-left: 2%; padding-right: 2%; padding-top: 2%; padding-bottom: 4%;">
-        <h2 class="h2 text" style="text-align: center;" id="api">POST / Create API Usage</h2>
-        <p class="lead text">Python</p>
-        <pre class="prettyprint">
-            <code class="lang-python">
-                import requests
-
-                paste_url = "https://noobpost.herokuapp.com/api"
-                
-                data = {
-                    'author': "NoobScience", 
-                    'lang': "python",
-                    'title': "Hello World",
-                    'paste_content': "print('Hello World')\n\nx=4\n\nif&nbsp&nbspx==4:\n\tprint('Hello World')"
-                }
-                
-                page = requests.post(paste_url, data=data)
-                
-                print(page.content)
-            </code>
-        </pre>
-        <p class="lead text">CURL</p>
-        <pre class="prettyprint">
-            <code>
-                curl -X POST -d 'author=noobscience&title=hello_world&lang=python&content=print("Hello World")' https://noobpost.herokuapp.com/api
-            </code>
-        </pre>
         <h2 class="h2 text" style="text-align: center;">GET API Usage</h2>
         <p class="lead text">Python</p>
-        <pre class="prettyprint">
-            <code class="lang-python">
-                import requests
-
-                paste_url = "https://noobpost.herokuapp.com/api/AHbVwS6J" #PasteID
-
-                page = requests.get(paste_url)
-                
-                print(page.content)
-            </code>
-        </pre>
-        <p class="lead text">CURL</p>
-        <pre class="prettyprint">
+        <div style="background-color: rgb(31, 32, 32); padding: 12px; border-radius: 12px;">
             <code>
-                curl -X GET https://noobpost.herokuapp.com/api/AHbVwS6J
+                <span style="color: rgb(226, 111, 103);">import</span> <span style="color: rgb(224, 218, 214);">requests</span>
+                <br><br>
+                <span style="color: rgb(244, 241, 245);">paste_url</span> = <span style="color: rgb(93, 236, 65);">"https://noobpost.herokuapp.com/api/AHbVwS6J"</span> <span style="color: rgb(58, 61, 61);">#PasteID</span>
+                <br><br>
+                <span style="color: rgb(231, 230, 231);">page</span> = <span style="color: rgb(1, 229, 245);">requests</span>.<span>get</span>(<span style="color: rgb(239, 236, 241);">paste_url</span>)
+                <br><br>
+                <span style="color: rgb(26, 236, 226);">print</span>(<span style="color: rgb(232, 226, 235);">page.content</span>)
             </code>
-        </pre>
+        </div>
+        <p class="lead text">CURL</p>
+        <code style="background-color: rgb(31, 32, 32); padding: 12px; border-radius: 12px;">
+            <span style="color: rgb(106, 231, 89);">curl</span> <span style="color: rgb(75, 78, 78);">-X</span> GET <span style="color: rgb(124, 214, 230);">https://noobpost.herokuapp.com/api/AHbVwS6J</span>
+        </code>
     </div>
+    {% if current_user.is_authenticated %}
+        <input type="text" id="login" value="false">
+    {% else %}
+        <input type="text" id="login" value="{{ login }}">
+    {% endif %}
     <hr class="my-2 text">
-    <p class="lead text" style="text-align: center; padding-top: 12px; padding-bottom: 12px;">Made with ❤️ and a lot of <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="coffee" class="svg-inline--fa fa-coffee fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" width=24px viewBox="0 0 640 512"><path fill="currentColor" d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"></path></svg> by NoobScience ⚡</p>
-    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <p class="lead text" style="text-align: center; padding-top: 12px; padding-bottom: 12px;">Made with ❤️ and a lot of ☕ by <a href="https://newtoallofthis123.github.io/About" target="_blank">NoobScience</a> ⚡</p>
+    <script>
+        $(document).ready(function(){
+            var login = $("#login").val()
+            if (login == "true"){
+                login_confirm = confirm("Login Credentials in Cookies Found! Do you want to login?")
+                if (login_confirm){
+                    $.ajax({
+                        type: "get",
+                        url: "/alt_login",
+                        success: function(response) {
+                            alert("Logged in successfully")
+                            location.reload()
+                        },
+                        error: function(err) {
+                            alert("This was the error: " + err);
+                        }
+                    });
+                }
+            }
+        })
+    </script>
 {% endblock %}

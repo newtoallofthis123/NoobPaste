@@ -1,22 +1,55 @@
-import json
-from flask.wrappers import Request
-from werkzeug.utils import redirect
-from werkzeug.wrappers import response
-from paste.brain import debug_engine, add_to_db, undo, get_db, ran_quote, ran_joke, tinyurl, ran_fact, qr_code_engine
-from flask.templating import render_template
-from flask import request, make_response, jsonify
-from paste import app
-from paste.models import Bin
+from distutils.log import error
+from paste.brain import *
+from flask import request, make_response, jsonify, redirect, render_template, flash, get_flashed_messages
+from paste import app, db, mail
+from flask_mail import Mail, Message
+from flask_cors import CORS, cross_origin
+from paste.models import Bin, User
+from paste.forms import Register, Login
+from flask_login import login_user, logout_user
+import os
+import hashlib
 
 @app.route('/')
 def paste():
     joke = ran_joke()
     author = "Hello " + str(request.cookies.get('author'))
+    if request.cookies.get('username') != None:
+        login = "true"
+    else:
+        login = "false"
     if author == "Hello None":
-        return render_template('home.html', joke=joke)
+        return render_template('home.html', joke=joke, login=login)
     else:
         latest_url = str(request.cookies.get('latest_url'))
-        return render_template('home.html', joke=joke, author=author, latest_url=latest_url)
+        return render_template('home.html', joke=joke, author=author, latest_url=latest_url, login=login)
+
+@app.route('/alt_login', methods=["get"])
+def alt_login():
+    if request.cookies.get('username') != None:
+        user_info = login_engine(request.cookies.get('username'))
+        if user_info is not None:
+            login_user(user_info)
+            flash(f'You are logged in as {request.cookies.get("username")}', category="success")
+        else:
+            flash(f'Error while logging you in as {request.cookies.get("username")}', category="danger")
+        return "Logged In!"
+
+@app.route('/code_edit_temp', methods=["GET", "POST"])
+def code_edit_temp():
+    lang = request.form.get("language")
+    theme = request.form.get("theme")
+    keybindings = request.form.get("keybindings")
+    font = request.form.get("font")
+    return redirect(f'/editor/lang={lang}&theme={theme}&keybindings={keybindings}&font="{font}"')
+
+@app.route('/editor')
+def code_edit():
+    return render_template('code_edit.html')
+
+@app.route('/editor/lang=<lang>&theme=<theme>&keybindings=<keybindings>&font=<font>', methods=["GET", "POST"])
+def code_editor(lang, theme, keybindings, font):
+    return render_template('code_editor.html', lang=lang, ran_quote=ran_quote(), theme=theme, keybindings=keybindings, font=font)
 
 @app.route('/create_temp', methods=["GET", "POST"])
 def create_render():
@@ -28,16 +61,102 @@ def create_render():
 def create(lang):
     return render_template('search.html', language=lang, ran_quote=ran_quote())
 
+@app.route('/create')
+def create_123():
+    return redirect("/create/write")
+
+@app.route('/password_check/<hash>', methods=["POST"])
+def password_check(hash):
+    password_to_check = request.form.get("password")
+    paste_info = get_db(hash)
+    if paste_info.password == password_to_check:
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            short_url = tinyurl(url)
+            shortpaw_url=shortpaw(url)
+            qr_code_engine(short_url)
+            decrypted_content = str(paste_info.content).replace("b'", "")
+            return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
+    else:
+        return redirect(f'/password/{hash}')
+
+@app.route('/password/<hash>')
+def password(hash):
+    paste_info = get_db(hash)
+    if paste_info == "No Such Paste":
+        return render_template('404.html')
+    else:
+        password = paste_info.password
+        return render_template('password.html', password=password, hash=hash)
+
+@app.route('/password_edit_check/<hash>', methods=["POST"])
+def password_edit_check(hash):
+    password_to_check = request.form.get("password")
+    paste_info = get_db(hash)
+    if paste_info.password == password_to_check:
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            decrypted_content = str(paste_info.content).replace("b'", "")
+            return render_template('paste_edit.html', paste_info=paste_info, ran_quote=ran_quote(), content=decrypted_content)
+    else:
+        return redirect(f'/password_edit/{hash}')
+
+@app.route('/password_edit/<hash>')
+def password_edit(hash):
+    paste_info = get_db(hash)
+    if paste_info == "No Such Paste":
+        return render_template('404.html')
+    else:
+        password = paste_info.password
+        return render_template('password_edit.html', password=password, hash=hash)
+
+@app.route('/edit_done', methods=["GET", "POST"])
+def edit_done():
+    if request.method == "POST":
+        content = request.form.get("paste_content")
+        password = request.form.get("password")
+        title = request.form.get("title")
+        author = request.form.get("author")
+        language = request.form.get("language")
+        hash = request.form.get("hash")
+        paste_info = edit_db(author=author, title=title, language=language, password=password, content=content, hash=hash)
+        url = "https://noobpaste.herokuapp.com/paste/" + paste_info["hash"]
+        short_url = tinyurl(url)
+        shortpaw_url = shortpaw(url)
+        qr_code_engine(url)
+        decrypted_content = str(paste_info["content"]).replace("b'", "")
+        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
+        page_response.set_cookie('author', paste_info["author"])
+        page_response.set_cookie('latest_url', paste_info["hash"])
+        page_response.set_cookie('time', time_cal())
+        return page_response
+
+@app.route('/edit/<hash>')
+def edit(hash):
+    paste_info = get_db(hash)
+    if paste_info == "No Such Paste":
+        return render_template('404.html')
+    else:
+        if paste_info.password == "None":
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            decrypted_content = str(paste_info.content).replace("b'", "")
+            return render_template('paste_edit.html', paste_info=paste_info, ran_quote=ran_quote(), content=decrypted_content)
+        else:
+            return redirect(f'/password_edit/{hash}')    
+
 @app.route('/paste/<hash>')
 def paste_engine(hash):
     paste_info = get_db(hash)
     if paste_info == "No Such Paste":
         return render_template('404.html')
     else:
-        url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
-        short_url = tinyurl(url)
-        qr_code_engine(short_url)
-        return render_template('paste.html', paste_info=paste_info, short_url=short_url, ran_fact=ran_fact())
+        if paste_info.password == "None":
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            short_url = tinyurl(url)
+            shortpaw_url = shortpaw(url)
+            qr_code_engine(short_url)
+            decrypted_content = str(paste_info.content).replace("b'", "")
+            return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
+        else:
+            return redirect(f'/password/{hash}')
 
 @app.route('/done', methods=["GET", "POST"])
 def done():
@@ -47,32 +166,147 @@ def done():
             content = request.form.get("file_paste_content")
         else:
             content = request.form.get("paste_content")
+        password_check = request.form.get("password_check")
+        if password_check == "on":
+            password = request.form.get("password")
+        else:
+            password = "None"
+        custom_check = request.form.get("custom_check")
         title = request.form.get("title")
         author = request.form.get("author")
         language = request.form.get("language")
-        paste_info = add_to_db(title, content, author, language)
+        if custom_check == "on":
+            custom_hash = request.form.get("custom_hash")
+            paste_info = custom_add_to_db(title=title, content=content, author=author, lang=language, custom_hash=custom_hash, password=password)
+        else:
+            paste_info = add_to_db(title, content, author, language, password)
         url = "https://noobpaste.herokuapp.com/paste/" + paste_info["hash"]
         short_url = tinyurl(url)
+        shortpaw_url = shortpaw(url)
         qr_code_engine(url)
-        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url))
+        decrypted_content = str(paste_info["content"]).replace("b'", "")
+        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
         page_response.set_cookie('latest_url', paste_info["hash"])
+        page_response.set_cookie('time', time_cal())
         return page_response
 
-@app.route('/api', methods=["POST"])
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    form = Register()
+    if form.validate_on_submit():
+        password_hashed = hash_engine(form.password.data)
+        user_1 = User(username=form.username.data, email=form.email.data, password_hashed=password_hashed, time=time_cal())
+        db.session.add(user_1)
+        db.session.commit()
+        login_user(user_1)
+        welcome_mail(form.username.data)
+        register_response = make_response(redirect('/'))
+        register_response.set_cookie('username', form.username.data)
+        register_response.set_cookie('password', form.password.data)
+        return register_response
+    if form.errors != {}:
+        for error_msg in form.errors.values():
+            flash(f'There was an error while creating user: {error_msg}')
+    return render_template('register.html', form=form)
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = Login()
+    if form.validate_on_submit():
+        hashed_password = hash_engine(form.password.data)
+        user_info = login_engine(form.username.data)
+        if user_info is not None:
+            if password_match_engine(user_info.password_hashed, form.password.data):
+                login_user(user_info)
+                flash(f'You are logged in as {form.username.data}', category="success")
+                login_response = make_response(redirect('/'))
+                login_response.set_cookie('username', form.username.data)
+                login_response.set_cookie('password', user_info.password_hashed)
+                return login_response
+            else:
+                flash(f'Check your Password and try again', category="danger")
+        else:
+            flash(f'Error while logging you in as {form.username.data}', category="danger")
+    if form.errors != {}:
+        for error_msg in form.errors.values():
+            flash(f'There was an error while logging in user: {error_msg}', category="danger")
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+def log_out():
+    logout_user()
+    flash("You have been logged out", category="info")
+    return redirect('/')
+
+@app.route('/authors/<author>')
+def author(author):
+    author_posts = get_db_author(author)
+    if author_posts is not None:
+        return render_template('author.html', author=author, posts=author_posts)
+    else:
+        return f'You have not created any pastes: click <a href="/create/write">here</a> to get started'
+
+@app.route('/otp', methods=["post"])
+def otp_gen():
+    email = request.values.get("email")
+    otp = otp_gen_engine()
+    otp_mail = Message('Confirm OTP to Register for NoobPaste', sender = 'noobsciencesmtp@gmail.com', recipients = [email])
+    otp_mail.html = '<div style="text-align: center;"><img src="https://github.com/newtoallofthis123/Assets/raw/main/Image/noobscience.png" style="width: 54px; height: 54px;" alt="NoobPaste Image"><h2>NoobPaste Registration</h2><p>Hey! Did you by any chance try to register with <a href="https://noobpaste.herokuapp.com">NoobPaste</a>? If so, this is your otp</p><h2 style="text-align: center; font-family: Courier, monospace">' +  otp + '</h2><p>Ignore if this was not done by you</p></div>'
+    mail.send(otp_mail)
+    flash("OTP Sent to Email", category="info")
+    return otp
+
+@app.route('/email', methods=["post"])
+def email():
+    username = request.values.get("username")
+    email_info = get_email(username)
+    if email_info == "No Such User":
+        return "No Such User"
+    else:
+        email = email_info.email
+        return jsonify(email)
+
+@app.route('/send_email', methods=["post"])
+@cross_origin(supports_credentials=True)
+def send_email():
+    email = request.values.get("email")
+    name = request.values.get("name")
+    content = request.values.get("content")
+    send_email = email_send(email=email, name=name, content=content)
+    return "Done"
+
+@app.route('/subscribe_news_letter', methods=["post"])
+@cross_origin(supports_credentials=True)
+def subscribe_news_letter():
+    email = request.values.get("email")
+    news_letter_info = news_letter(email)
+    return "Done"
+
+@app.route('/send_news_letter', methods=["post"])
+@cross_origin(supports_credentials=True)
+def news_letter():
+    title = request.values.get("title")
+    content = request.values.get("content")
+    news_letter = send_news_letter(title, content)
+    return "Done"
+
+@app.route('/post', methods=["POST"])
 def api():
     if request.method == "POST":
-        title = request.form.get("title")
-        content = request.form.get("paste_content")
-        author = request.form.get("author")
-        language = request.form.get("lang")
-        paste_info = add_to_db(title, content, author, language)
+        title = request.values.get("title")
+        content = request.values.get("paste_content")
+        author = request.values.get("author")
+        language = request.values.get("lang")
+        password = request.values.get("password")
+        paste_info = add_to_db(title, content, author, language, password)
         url = "https://noobpaste.herokuapp.com/paste/" + paste_info["hash"]
         short_url = tinyurl(url)
         paste_response = {
             "title": paste_info["title"],
             "author": paste_info["author"],
             "content": paste_info["content"],
+            "password": paste_info["password"],
             "lang": paste_info["lang"],
             "id": paste_info["hash"],
             "short_url": short_url
@@ -80,6 +314,25 @@ def api():
         return jsonify(paste_response)
     else:
         return "Only POST requests allowed on this route, try /api/paste_id"
+
+@app.post('/gravatar')
+def gravatar():
+    email = request.values.get("email")
+    gravatar_hash = hashlib.md5(email.encode('utf-8')).hexdigest()
+    gravatar_url = f'https://www.gravatar.com/avatar/{gravatar_hash}'
+    return gravatar_url
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template("error.html", error_code=404)
+
+@app.errorhandler(405)
+def method_not_allowed_error(error):
+    return render_template("error.html", error_code=405)
+
+@app.errorhandler(500)
+def server_error(error):
+    return render_template("error.html", error_code=500)
 
 @app.route('/api/<hash>', methods=["GET"])
 def get_api(hash):

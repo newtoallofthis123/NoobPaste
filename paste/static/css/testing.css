@@ -1,0 +1,8 @@
+.card_div{
+	border-radius: 5%;
+	padding: 12px;
+	box-shadow: 12px 10px 17px -1px rgba(186,177,177,0.75);
+	-webkit-box-shadow: 12px 10px 17px -1px rgba(186,177,177,0.75);
+	-moz-box-shadow: 12px 10px 17px -1px rgba(186,177,177,0.75);
+	margin-top: 5%;
+}

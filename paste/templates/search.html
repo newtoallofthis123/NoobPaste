@@ -10,28 +10,81 @@
         </figcaption>
     </figure>
     <h1 class="title" style="text-align: center; padding: 12px;">Inspired yet? Write your paste here</h1>
+    <form method="post" id="language_select">
+        <select class="form-select" aria-label="Default select example" name="language" id="lang">
+            <option selected>{{ language.capitalize() }}</option>
+            <option value="python">Python</option>
+            <option value="javascript">Javascript</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="markdown">Markdown</option>
+            <option value="text">Text</option>
+            <option value="sass">SASS</option>
+            <option value="java">Java</option>
+            <option value="lua">Lua</option>
+            <option value="go">Go</option>
+            <option value="php">PHP</option>
+            <option value="perl">Perl</option>
+            <option value="cython">Cython</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="ruby">Ruby</option>
+            <option value="shell">Shell</option>
+            <option value="powershell">Powershell</option>
+        </select>
+    </form>
     <div style="margin-left: 12%; margin-right: 12%;">
         <form action="/done" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1" style="background-color: rgb(160, 23, 252);"><span style="color: white; font-family: 'Cascadia Code';">></span></span>
                 <input type="text" class="form-control" placeholder="Enter Title" aria-label="Username" aria-describedby="basic-addon1" name="title" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
             </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1" style="background-color: rgb(160, 23, 252);"><span style="color: white; font-family: 'Cascadia Code';">></span></span>
-                <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
-            </div>
+            {% if current_user.is_authenticated %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1" style="background-color: rgb(160, 23, 252);"><span style="color: white; font-family: 'Cascadia Code';">></span></span>
+                    <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" value="{{ (current_user.username) }}">
+                </div>
+            {% else %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1" style="background-color: rgb(160, 23, 252);"><span style="color: white; font-family: 'Cascadia Code';">></span></span>
+                    <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                </div>
+            {% endif %}
             <input type="hidden" name="language" value="{{ language }}">
-            <textarea name="paste_content" id="paste_content" cols="30" rows="10" style="font-family: 'Cascadia Code';"></textarea>
-            <input type="hidden" name="file_paste_content" id="file_paste_content">
-            <p class="lead text" style="text-align: center; padding-top: 2%; padding-bottom: 2%;">or upload a file, but the above filled area won't be considered</p>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <div class="input-group-text" style="padding-bottom: 12px;">
-                        <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="check">
+                        <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="password_check">
                     </div>
                 </div>
-                <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload" name="file">
+                <input type="text" class="form-control" id="password" placeholder="Enter Password (Optional but Recommended)" aria-describedby="inputGroupFileAddon03" aria-label="Upload" name="password">
             </div>
+            <div id="canvas">
+                <textarea name="three_dots" id="three_dots" cols="1" rows="1" class="textarea"> 🔴🟢🟡</textarea>
+                <textarea name="paste_content" id="paste_content" cols="30" rows="10" spellcheck="true" autofocus="true"></textarea>
+            </div>
+            <input type="hidden" name="file_paste_content" id="file_paste_content">
+            {% if current_user.is_authenticated %}
+                <p class="lead text" style="text-align: center; padding-top: 2%; padding-bottom: 2%;">or upload a file, but the above filled area won't be considered</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text" style="padding-bottom: 12px;">
+                            <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="check">
+                        </div>
+                    </div>
+                    <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload" name="file">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text" style="padding-bottom: 12px;">
+                            <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="custom_check">
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with checkbox" name="custom_hash" placeholder="Enter Custom Alias">
+                </div>
+            {% else %}
+                <p class="lead text"><a href="/login" class="link">Login</a> to use custom alias and read code from file</p>
+            {% endif %}
             <p class="lead text" id="file-content"></p>
             <div style="text-align: center;">
                 <button type="submit" id="language_btn">Continue <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" fill="#defece" /></svg></button>
@@ -40,11 +93,33 @@
     </div>
 
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closebrackets.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/comment/comment.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css">
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/xml/xml.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/matchtags.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/fold/xml-fold.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closetag.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/selection/active-line.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    {% if language == "html" %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/css/css.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/htmlmixed/htmlmixed.js"></script>
+    {% set language = "text/html" %}
+    {% else %}
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/{{ language }}/{{ language }}.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/monokai.css">
+    {% endif %}
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/monokai.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='theme/monokai.css') }}"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/keymap/sublime.js"></script>
     <script>
+        document.getElementById("lang").onchange = execFunc;
+        function execFunc(){
+            window.location.replace("/create/" + document.getElementById("lang").value);
+        }
         function readSingleFile(e) {
             var file = e.target.files[0];
             if (!file) {
@@ -62,14 +137,39 @@
             var paste_content = document.getElementById('file_paste_content');
             file_paste_content.value = contents;
             }
-
-        var codemirrorEditor = CodeMirror.fromTextArea(document.getElementById('paste_content'), {
+        const codemirrorEditor = CodeMirror.fromTextArea(document.getElementById('paste_content'), {
             lineNumbers: true,
             mode: "{{ language }}",
             theme: "monokai",
-            autofocus: true,
-            keymap: "sublime",
+            keymap: "{{ keybindings }}",
+            autoCloseBrackets: true,
+            matchTags: {bothTags: true},
+            extraKeys: {
+                "Ctrl-J": "toMatchingTag", 
+                "Ctrl-/": "toggleComment",
+                "F11": function(cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Esc": function(cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                }
+            },
+            autoCloseTags: true,
+            // styleActiveLine: true,
+            smartIndent: true,
+            cursorBlinkRate: 0,
+            cursorHeight: 1,
+            viewportMargin: Infinity,
         });
+        codemirrorEditor.setSize("100%", "36vw");
+        const three_dots = CodeMirror.fromTextArea(document.getElementById('three_dots'), {
+            theme: "monokai",
+            readOnly: true,
+            cursorBlinkRate: 0,
+            cursorHeight: 0,
+            viewportMargin: Infinity,       
+        });
+        three_dots.setSize("100%", "50%");
         document.getElementById('inputGroupFile03').addEventListener('change', readSingleFile, false);
     </script>
 {% endblock %}

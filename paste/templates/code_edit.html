@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<div>
+		<form action="/code_edit_temp" method="post" id="language_select">
+			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Language</label>
+			<select class="form-select" aria-label="Default select example" name="language">
+                <option value="python">Python</option>
+                <option value="javascript">Javascript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="markdown" selected>Markdown</option>
+                <option value="text">Text</option>
+                <option value="lua">Lua</option>
+                <option value="java">Java</option>
+                <option value="json">JSON</option>
+                <option value="php">PHP</option>
+                <option value="xml">XML</option>
+                <option value="cpp">C++</option>
+                <option value="rust">Rust</option>
+			</select>
+			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Favourite Theme</label>
+			<select class="form-select" aria-label="Default select example" name="theme">
+				<option selected value="dracula">Dracula</option>
+				<option value="monokai">Monokai</option>
+				<option value="bespin">Bespin</option>
+				<option value="cobalt">Cobalt</option>
+				<option value="base16-dark">Base16 Dark</option>
+				<option value="base16-light">Base16 Light</option>
+				<option value="material-darker">Material Darker</option>
+				<option value="material-palenight">Material PaleNight</option>
+				<option value="material-ocean">Material Ocean</option>
+				<option value="gruvbox-dark">GruvBox Dark</option>
+			</select>
+			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose KeyBindings</label>
+			<select class="form-select" aria-label="Default select example" name="keybindings">
+				<option selected value="sublime">Sublime</option>
+				<option value="vim">Vim</option>
+				<option value="emacs">Emacs</option>
+			</select>
+			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Font</label>
+			<select class="form-select" aria-label="Default select example" name="font">
+				<option selected value="Oxygen Mono">Oxygen Mono</option>
+				<option value="Cascadia Code">Cascadia Code</option>
+				<option value="JetBrains Mono">JetBrains Mono</option>
+				<option value="Fira Code">Fira Code</option>
+			</select>
+			<!-- <input type="color" name="color"> -->
+			<div style="text-align: center;">
+				<button type="submit" id="language_btn">Continue <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" fill="#defece" /></svg></button>
+			</div>
+		</form>
+	</div>
+{% endblock %}
