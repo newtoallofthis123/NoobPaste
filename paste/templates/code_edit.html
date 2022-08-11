@@ -3,28 +3,46 @@
 {% block body %}
 	<div>
 		<form action="/code_edit_temp" method="post" id="language_select">
-			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Language</label>
+			<label for="basic-url" class="form-label lead text" style="padding: 12px;">Choose Your Language</label>
 			<select class="form-select" aria-label="Default select example" name="language">
-                <option value="python">Python</option>
-                <option value="javascript">Javascript</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="markdown" selected>Markdown</option>
-                <option value="text">Text</option>
-                <option value="lua">Lua</option>
-                <option value="java">Java</option>
-                <option value="json">JSON</option>
-                <option value="php">PHP</option>
-                <option value="xml">XML</option>
-                <option value="cpp">C++</option>
-                <option value="rust">Rust</option>
+				<option value="python">Python</option>
+				<option value="javascript">Javascript</option>
+				<option value="html">HTML</option>
+				<option value="css">CSS</option>
+				<option selected value="markdown">Markdown</option>
+				<option value="text">Text</option>
+				<option value="lua">Lua</option>
+				<option value="java">Java</option>
+				<option value="json">JSON</option>
+				<option value="php">PHP</option>
+				<option value="xml">XML</option>
+				<option value="cpp">C++</option>
+				<option value="rust">Rust</option>
+				<option value="powershell">Powershell</option>
+				<option value="vbscript">VBScript</option>
+				<option value="toml">TOML</option>
+				<option value="swift">Swift</option>
+				<option value="shell">Shell</option>
+				<option value="ruby">Ruby</option>
+				<option value="perl">Perl</option>
+				<option value="jsx">JSX</option>
+				<option value="go">go</option>
 			</select>
-			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Favourite Theme</label>
+			<label for="basic-url" class="form-label lead text" style="padding: 12px;">Choose Your Favourite Theme</label>
 			<select class="form-select" aria-label="Default select example" name="theme">
 				<option selected value="dracula">Dracula</option>
 				<option value="monokai">Monokai</option>
 				<option value="bespin">Bespin</option>
 				<option value="cobalt">Cobalt</option>
+				<option value="ayu-dark">Ayu-Dark</option>
+				<option value="base16-light">Base16-light</option>
+				<option value="base16-dark">Base16-dark</option>
+				<option value="mdn-like">MDN</option>
+				<option value="neat">Neat</option>
+				<option value="night">Night</option>
+				<option value="nord">Nord</option>
+				<option value="hopscotch">Hopscotch</option>
+				<option value="Idea">Idea</option>
 				<option value="base16-dark">Base16 Dark</option>
 				<option value="base16-light">Base16 Light</option>
 				<option value="material-darker">Material Darker</option>
@@ -32,13 +50,13 @@
 				<option value="material-ocean">Material Ocean</option>
 				<option value="gruvbox-dark">GruvBox Dark</option>
 			</select>
-			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose KeyBindings</label>
+			<label for="basic-url" class="form-label lead text" style="padding: 12px;">Choose KeyBindings</label>
 			<select class="form-select" aria-label="Default select example" name="keybindings">
 				<option selected value="sublime">Sublime</option>
 				<option value="vim">Vim</option>
 				<option value="emacs">Emacs</option>
 			</select>
-			<label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Font</label>
+			<label for="basic-url" class="form-label lead text" style="padding: 12px;">Choose Your Font</label>
 			<select class="form-select" aria-label="Default select example" name="font">
 				<option selected value="Oxygen Mono">Oxygen Mono</option>
 				<option value="Cascadia Code">Cascadia Code</option>

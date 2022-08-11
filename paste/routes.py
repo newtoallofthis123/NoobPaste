@@ -13,16 +13,34 @@ import hashlib
 @app.route('/')
 def paste():
     joke = ran_joke()
-    author = "Hello " + str(request.cookies.get('author'))
+    author = str(request.cookies.get('author'))
     if request.cookies.get('username') != None:
         login = "true"
     else:
         login = "false"
-    if author == "Hello None":
-        return render_template('home.html', joke=joke, login=login)
+    latest_url = str(request.cookies.get('latest_url'))
+    return render_template('home.html', joke=joke, author=author, latest_url=latest_url, login=login)
+
+@app.route('/about')
+def about():
+    api_content = "#API Implementation in Python\n\n#POST API\n\nimport requests\nimport json\n\nurl = 'https://noobpaste.herokuapp.com'\n\nparams={'title': 'title', 'paste_content': 'paste_content', 'author': 'author', 'lang': 'python', 'password': 'None'}\ndata = requests.post(f'{url}/post', params=params).content\njson_data = json.loads(data)\nprint(json_data)\n\n#get API\n\ndata = requests.get(f'{url}/api/<hash>/<password>'\njson_data = json.loads(data)\nprint(json_data)\n# By NoobScience 2022"
+    return render_template('about.html', ran_fact=ran_fact(), api_content=api_content)
+
+@app.route('/<hash>')
+def paste_shortcut(hash):
+    paste_info = get_db(hash)
+    if paste_info == "No Such Paste":
+        return render_template('404.html')
     else:
-        latest_url = str(request.cookies.get('latest_url'))
-        return render_template('home.html', joke=joke, author=author, latest_url=latest_url, login=login)
+        if paste_info.password == "None":
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            short_url = tinyurl(url)
+            shortpaw_url = shortpaw(url)
+            qr_code_engine(short_url)
+            decrypted_content = str(paste_info.content).replace("b'", "")
+            return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
+        else:
+            return redirect(f'/password/{hash}')
 
 @app.route('/alt_login', methods=["get"])
 def alt_login():
@@ -111,7 +129,7 @@ def password_edit(hash):
 @app.route('/edit_done', methods=["GET", "POST"])
 def edit_done():
     if request.method == "POST":
-        content = request.form.get("paste_content")
+        content = censor(request.form.get("paste_content"))
         password = request.form.get("password")
         title = request.form.get("title")
         author = request.form.get("author")
@@ -163,9 +181,9 @@ def done():
     if request.method == "POST":
         check = request.form.get("check")
         if check == "on":
-            content = request.form.get("file_paste_content")
+            content = censor(request.form.get("file_paste_content"))
         else:
-            content = request.form.get("paste_content")
+            content = censor(request.form.get("paste_content"))
         password_check = request.form.get("password_check")
         if password_check == "on":
             password = request.form.get("password")
@@ -295,7 +313,7 @@ def news_letter():
 def api():
     if request.method == "POST":
         title = request.values.get("title")
-        content = request.values.get("paste_content")
+        content = censor(request.values.get("paste_content"))
         author = request.values.get("author")
         language = request.values.get("lang")
         password = request.values.get("password")
@@ -315,11 +333,15 @@ def api():
     else:
         return "Only POST requests allowed on this route, try /api/paste_id"
 
+@app.route('/login_error')
+def login_error():
+    return render_template("login_error.html")
+
 @app.post('/gravatar')
 def gravatar():
     email = request.values.get("email")
     gravatar_hash = hashlib.md5(email.encode('utf-8')).hexdigest()
-    gravatar_url = f'https://www.gravatar.com/avatar/{gravatar_hash}'
+    gravatar_url = jsonify({"src": f'https://www.gravatar.com/avatar/{gravatar_hash}'})
     return gravatar_url
 
 @app.errorhandler(404)
@@ -334,24 +356,27 @@ def method_not_allowed_error(error):
 def server_error(error):
     return render_template("error.html", error_code=500)
 
-@app.route('/api/<hash>', methods=["GET"])
-def get_api(hash):
+@app.route('/api/<hash>/<password>', methods=["GET"])
+def get_api(hash, password):
     if request.method == "GET":
         paste_info = get_db(hash)
         if paste_info == "No Such Paste":
             return f'No Paste with Paste ID: {hash}'
         else:
-            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
-            short_url = tinyurl(url)
-            paste_response = {
-                "title": paste_info.title,
-                "author": paste_info.author,
-                "content": paste_info.content,
-                "lang": paste_info.lang,
-                "id": paste_info.hash,
-                "short_url": short_url
-            }
-            return jsonify(paste_response)
+            if paste_info.password == password:
+                url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+                short_url = tinyurl(url)
+                paste_response = {
+                    "title": paste_info.title,
+                    "author": paste_info.author,
+                    "content": paste_info.content,
+                    "lang": paste_info.lang,
+                    "id": paste_info.hash,
+                    "short_url": short_url
+                }
+                return jsonify(paste_response)
+            else:
+                return f'Wrong Password for {hash}; If there is no password set, try to send in password as "None"'
     else:
         return "Only GET requests allowed on this route. Try /api"
 

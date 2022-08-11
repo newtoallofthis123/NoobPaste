@@ -29,6 +29,12 @@ def otp_gen_engine():
     otp = "".join(otp_string)
     return otp
 
+def censor(content):
+    import re
+    censor_node = re.compile('([Ff][Uu]*[Cc]*[Kk]|[Ss]+[Ee]+[Xx]|[Dd]+[Ii]*[Cc]*[Kk]|[Pp][Us][Us][Yy]|[Pp][Oo]+[Rr]+[Nn])')
+    censored = censor_node.sub("*CENSORED*", content)
+    return censored 
+
 def time_cal():
     current_t = datetime.now()
     current_date = str(date.today())

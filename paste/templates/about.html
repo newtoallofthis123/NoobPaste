@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="main_div">
+    <h1 class="main_title">Why Use NoobPaste?</h1>
+    <p class="lead text text_div">
+        NoobPaste is written in python using the flask micro framework. It is very fast and is very secure. NoobPaste uses a database to store your data. Even if you don't set a password, your data is encrypted with a key. The data is acessed using postgregsql. This setup should be relatively safe. Your Code is stored in a database which is queried everytime you make a request. Unless you have the exact 8 character string, accidentally stubling onto another code is quite rare. <em>Password Protection Available.</em> NoobPaste is deployed on heroku. Heroku servers take some time to activate but once they do, they are relatively fast. (sorry for using the word 'relatively' so much 🙂). NoobPaste is simply meant to act as a good alternative to pastebin and it is till in beta. So, use it with care and don't post anything sensitive on it.
+    </p>
+    <h1 class="title" style="text-align: center;">Log Policy</h1>
+    <p class="lead text text_div">
+        NoobPaste has a strict no tracking policy. NoobPaste can't track you because 1. It doesn't want to 2. It can't because I don't have the necessary skills to track 😄. You can rest assured NoobPaste won't track you.<br><br>NoobPaste does use cookies. When you create a new paste, your author field and paste_id is stored locally in the cookies. These cookies are only used when you visit NoobPaste, to show your author and last paste. These are not cross site cookies and are not harmfull for your computer. These are pretty much harmless and have no valid information. <em>NoobPaste has no reason to track you at all.</em> 😌
+    </p>
+    <h1 class="title" style="text-align: center;">Open Source</h1>
+    <p class="lead text text_div">
+        NoobPaste is opensource and is it's code is hosted on github. Although the github repository is not linked to the heroku depolyment, so except regular updates in the github repository which may not be pushed to heroku. NoobPaste's github repository is <code>https://github.com/newtoallofthis123/NoobPaste</code>. Any help is appreciated. NoobPaste can also be self hosted on heroku. All you have to do this replace all the instances of NoobPaste with your heroku app name and you are done 😋. You can also run NoobPaste on replit. <em>Heroku Template coming soon.</em>
+    </p>
+    <h1 class="main_title" id="api">Roboust API</h1>
+    <p class="lead text text_div">See Below a few Example Implementations of the NoobPaste API</p>
+    <div id="canvas" style="margin: 5%; margin-top: 0px;">
+        <textarea name="three_dots" id="three_dots" cols="1" rows="1" class="textarea"> 🔴🟢🟡 NoobPaste Code Editor v.2.1</textarea>
+        <textarea name="content" id="content" cols="30" rows="10" spellcheck="true" autofocus="true">{{ api_content }}</textarea>
+    </div>
+    <h2 class="title" style="text-align: center;">Thanks for Using NoobPaste!</h2>
+</div>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closebrackets.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/comment/comment.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css">
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/xml/xml.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/matchtags.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/fold/xml-fold.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closetag.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/selection/active-line.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/display/placeholder.min.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/python/python.js"></script>
+<script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/shell/shell.js"></script>
+<link rel="stylesheet" href="{{ url_for('static',filename='theme/monokai.css') }}"> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/keymap/sublime.js"></script>
+<script>
+    const codemirrorEditor = CodeMirror.fromTextArea(document.getElementById('content'), {
+        lineNumbers: true,
+        mode: "python",
+        theme: "monokai",
+        keymap: "sublime",
+        readOnly: true,
+        autoCloseBrackets: true,
+        matchTags: {bothTags: true},
+        extraKeys: {
+            "Ctrl-J": "toMatchingTag", 
+            "Ctrl-/": "toggleComment",
+            "F11": function(cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function(cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
+        },
+        autoCloseTags: true,
+        smartIndent: true,
+        cursorBlinkRate: 0,
+        cursorHeight: 1,
+        viewportMargin: Infinity,
+    });
+    codemirrorEditor.setSize("100%", "36vw")
+    const three_dots = CodeMirror.fromTextArea(document.getElementById('three_dots'), {
+        theme: "monokai",
+        readOnly: true,
+        cursorBlinkRate: 0,
+        cursorHeight: 0,
+        viewportMargin: Infinity,       
+    });
+    three_dots.setSize("100%", "50%");
+</script>
+{% endblock %}

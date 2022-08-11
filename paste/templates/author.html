@@ -1,20 +1,18 @@
 {%  extends 'base.html' %}
 
 {% block body %}
-<h2 class="display-3" style="text-align: center;">{{ author }}</h2>
-<div class="container-fluid" style="margin-left: 10%; margin-right: 10%;">
-	<div class="row">
-		{% for post in posts %}
-		    <div class="col-md-3">
-				<div class="card card_div" style="background-color:#ffffff;">
-				  	<div class="card-body">
-				    	<h5 class="card-title">{{ post.title }}</h5>
-				    	<p class="card-text">{{ post.author }} <br> {{ post.hash }} <br> {{ post.time }} </p>
-				    	<button type="button" class="btn btn-primary"><a href="/paste/{{ post.hash }}" class="btn_link">See The Paste</a></button>
-				  	</div>
-				</div>
-			</div>
-		{% endfor %}
+<h2 class="sub_heading text" style="text-align: center;">Hey {{ author }}! Hope You are enjoying NoobPaste!</h2>
+<div class="container-fluid">
+	<div class="author_div">
+		<div class="row">
+			{% for post in posts %}
+			<h2 class="display-3 text">{{ post.title }}</h2>
+			<p style="color: #f50707;"><span class="lead text">Author: </span><span class="lead text">{{ post.author }}</span></p>
+			<p style="color: #0d79f5;"><span class="lead text">Time: </span><span class="lead text">{{ post.time }}</span></p>
+			<p style="color: #ecb009;"><span class="lead text">hash: </span><a href="/{{ post.hash }}" class="link">{{ post.hash }}</a></p>
+			<p class="lead text" style="text-align: center;">---------------------------------</p>
+			{% endfor %}
+		</div>
 	</div>
 </div>
 
