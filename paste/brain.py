@@ -11,6 +11,7 @@ import pyjokes
 from base64 import b64encode, b64decode
 import hashlib
 import os
+from cryptography.fernet import Fernet
 
 
 def hash_gen_engine():
@@ -44,12 +45,14 @@ def time_cal():
 
 def add_to_db(title, content, author, lang, password):
     hash = hash_gen_engine()
+    key = Fernet.generate_key()
     time = time_cal()
-    paste_info = Bin(title=title, hash=hash, content=content, lang=lang, author=author, time=time, password=password)
+    content = encrypt(content, key)
+    paste_info = Bin(title=title, hash=hash, content=content, lang=lang, key=key, author=author, time=time, password=password)
     db.session.add(paste_info)
     db.session.commit()
     db.session.refresh(paste_info)
-    paste_info = {"title": title, "hash": hash, "content": content, "lang": lang, "author": author, "password": password}
+    paste_info = {"title": title, "hash": hash, "content": content, "lang": lang, "key": key, "author": author, "password": password}
     return paste_info
 
 def welcome_mail(username):
@@ -87,8 +90,17 @@ def edit_db(author, title, password, content, language, hash):
     db.session.add(paste_content)
     db.session.commit()
     db.session.refresh(paste_content)
-    paste_info_content = {"title": title, "hash": hash, "content": content, "lang": language, "author": author, "password": password}
+    paste_info_content = {"title": title, "hash": hash, "content": content, "lang": language, "key": paste_content.key, "author": author, "password": password}
     return paste_info_content
+
+def del_db(hash):
+    content = Bin.query.filter_by(hash=hash).first()
+    if content == None:
+        return "No Such Paste"
+    else:
+        Bin.query.filter_by(hash=hash).delete()
+        db.session.commit()
+        return "Deleted Entry"
 
 def news_letter(email):
     time = time_cal()
@@ -110,17 +122,20 @@ def get_db_author(author):
     content = Bin.query.filter_by(author=author).all()
     return content
 
-def debug_engine(table):
-    debug_content = table.query.all()
+def debug_engine():
+    debug_content = User.query.all()
     return debug_content
 
 def undo():
     db.session.rollback()
 
 def ran_quote():
-    quotes_page = json.loads(requests.get("https://api.quotable.io/random").content)
-    quote_list = [quotes_page["content"], quotes_page["author"]]
-    return quote_list
+    try:
+        quotes_page = json.loads(requests.get("https://api.quotable.io/random").content)
+        quote_list = [quotes_page["content"], quotes_page["author"]]
+        return quote_list
+    except:
+        quote_list = ["Never give up!", "EveryOne in The World!"]
 
 def ran_joke():
     joke = pyjokes.get_joke(category="neutral")
@@ -165,9 +180,24 @@ def check_hash_duplicate(hash):
 
 def custom_add_to_db(title, content, author, lang, custom_hash, password):
     hash = check_hash_duplicate(custom_hash)
+    key = Fernet.generate_key()
     time = time_cal()
-    paste_info = Bin(title=title, hash=hash, content=content, lang=lang, author=author, time=time, password=password)
+    content = encrypt(content, key)
+    paste_info = Bin(title=title, hash=hash, content=content, lang=lang, key=key, author=author, time=time, password=password)
     db.session.add(paste_info)
     db.session.commit()
-    paste_info = {"title": title, "hash": hash, "content": content, "lang": lang, "author": author, "password": password}
+    paste_info = {"title": title, "hash": hash, "content": content, "lang": lang, "key": key, "author": author, "password": password}
     return paste_info
+
+# Please help Me!
+
+def encrypt(content, key):
+    # fernet = Fernet(key)
+    # encrypted_content = fernet.encrypt(content.encode())
+    return content
+
+def decrypt(content, key):
+    # print(bytes(key, encoding='utf8').decode())
+    # fernet = Fernet(key)
+    # decrypted_content = (fernet.decrypt(content)).decode()
+    return content

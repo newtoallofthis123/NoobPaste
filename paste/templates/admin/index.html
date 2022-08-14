@@ -1,0 +1,16 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+  <style type="text/css">
+    nav{
+      border-radius: 24px;
+      margin: 2%;
+    }
+  </style>
+  <h1 class="display-5" style="text-align: center;">NoobPaste Admin Console</h1>
+  <p class="lead">Be Very careful while making changes. This admin console is for development only and I won't misuse it</p>
+  <button class="btn btn-primary"><a href="/admin/user" style="color: #f0f0f0; text-decoration: none;">Users Data</a></button>
+  <button class="btn btn-primary"><a href="/admin/bin" style="color: #f0f0f0; text-decoration: none;">Paste Data</a></button>
+  <p class="lead">If you are here by brute forcing your way in, please don't misuse this. NoobPaste is still in development and I am still a learning developer. So please <a href="mailto:noobscience123@gmail.com">contact</a> me and tell me about it. Thank You.</p>
+
+{% endblock %}

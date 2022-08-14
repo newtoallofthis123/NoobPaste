@@ -1,6 +1,78 @@
 {% extends 'base.html' %}
 
 {% block body %}
+{% if paste_info["lang"] == "rich" %}
+
+<blockquote class="blockquote" style="padding: 12px;">
+    <p class="lead text"><span><strong>This load's random fact: &nbsp</strong></span>{{ ran_fact }}</p>
+</blockquote>
+<div id="content"></div>
+<textarea name="textarea" style="display: none;" id="textarea" cols="30" rows="10"></textarea>
+<div class="container" style="padding-top: 2%; padding-bottom: 2%;">
+    <div class="row">
+        <div class="col-sm">
+            <h4 class="h4 text">Title: &nbsp<span class="lead text">{{ paste_info["title"] }}</span></h4>
+            <h4 class="h4 text">Language: &nbsp<span class="lead text">{{ (paste_info["lang"]).capitalize() }}</span></h4>
+            <h4 class="h4 text">Paste ID: &nbsp<span class="lead text"><a href="/paste/{{ paste_info['hash'] }}" class="link">{{ paste_info["hash"] }}</a></span></h4>
+            <h4 class="h4 text">Author: &nbsp<span class="lead text">{{ paste_info["author"] }}</span></h4>
+        </div>
+        <div class="col-sm">
+            <div>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"><span class="badge bg-dark share_link">Tweet It</span></a>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"><span style="color: #1DA1F2; font-size: 1.2rem;"><i class="bi bi-twitter"></i></span></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://noobpaste.herokuapp.com/paste/{{ paste_info['hash'] }}" style="padding-left: 12px;"><span class="badge bg-dark share_link">Facebook</span></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://noobpaste.herokuapp.com/paste/{{ paste_info['hash'] }}"><span style="color: #1877F2; font-size: 1.2rem;"><i class="bi bi-facebook"></i></a>
+                <a href="mailto:?subject=I wanted you to see this &amp;body= Paste by {{ paste_info['author'] }} on NoobPaste (https://noobpaste.herokuapp.com). Check it out https://noobpaste.herokuapp.com/paste/{{ paste_info['hash'] }}" style="padding-left: 12px;"><span class="badge bg-dark share_link">Mail</span></a>
+                <a href="mailto:?subject=I wanted you to see this &amp;body= Paste by {{ paste_info['author'] }} on NoobPaste (https://noobpaste.herokuapp.com). Check it out https://noobpaste.herokuapp.com/paste/{{ paste_info['hash'] }}"><span style="color: #EA4335; font-size: 1.2rem;"><i class="bi bi-envelope"></i></a>
+                <a href="https://web.whatsapp.com/send?text=I%20wanted%20to%20see%20a%20paste%20on%20NoobPaste.%20Check%20it%20out%20at%20https%3A%2F%2Fnoobpaste.herokuapp.com%2Fpaste%2F2{{ paste_info['hash'] }}" style="padding-left: 12px;"><span class="badge bg-dark share_link">Whatsapp</span></a>
+                <a href="https://web.whatsapp.com/send?text=I%20wanted%20to%20see%20a%20paste%20on%20NoobPaste.%20Check%20it%20out%20at%20https%3A%2F%2Fnoobpaste.herokuapp.com%2Fpaste%2F2{{ paste_info['hash'] }}"><span style="color: #2ddb16; font-size: 1.2rem;"><i class="bi bi-whatsapp"></i></span></a>
+                <a href="https://instagram.com" style="padding-left: 12px;"><span class="badge bg-dark share_link">Instagram</span></a>
+                <a href="https://instagram.com"><span style="color: #E4405F; font-size: 1.2rem;"><i class="bi bi-instagram"></i></a>
+            </div>
+            <div class="d-grid gap-2" style="padding-top: 12px; padding-bottom: 12px;">
+                <p>
+                    <code id="short_link">{{ short_url }}</code><span><button style="background-color: rgba(255, 255, 255, 0); border: 0;" id="copy_btn1"><i class="bi bi-clipboard" style="color: #212121;" id="copy_btn_icon1"></i></button></span></code> <br> 
+                    <code id="short_link">{{ shortpaw }}</code><span><button style="background-color: rgba(255, 255, 255, 0); border: 0;" id="copy_btn2"><i class="bi bi-clipboard" style="color: #212121;" id="copy_btn_icon2"></i></button></span></code> <br> 
+                    <code id="link">https://noobpaste.herokuapp.com/paste/{{ paste_info['hash'] }}</code><span><button style="background-color: rgba(255, 255, 255, 0); border: 0;" id="copy_btn3"><i class="bi bi-clipboard" style="color: #212121;" id="copy_btn_icon3"></i></button></span></code>
+                </p>
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-primary" id="copy_content" style="background-color: #4ECCA3;">Copy Code</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="background-color: #4ECCA3;" id="capture_btn">Capture</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="background-color: #4ECCA3;"><a href="/edit/{{ paste_info['hash'] }}" class="btn_link">Edit The Paste</a></button>
+            </div>
+            <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Code Capture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="" id="img_canvas" class="img img-responsive">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary"><a href="" class="btn_link1" download>Download</a></button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        function decodeEntity(inputStr) {
+            $("#textarea").html(inputStr)
+            return $("#textarea").val()
+        }
+        $("#content").append(decodeEntity('{{ content }}'));
+    })
+</script>
+
+{% else %}
+
     <!-- <h1 id="demo">Hello World</h1> -->
     <blockquote class="blockquote" style="padding: 12px;">
         <p class="lead text"><span><strong>This load's random fact: &nbsp</strong></span>{{ ran_fact }}</p>
@@ -132,4 +204,6 @@
             }
         });
     </script>
+
+{% endif %}
 {% endblock %}

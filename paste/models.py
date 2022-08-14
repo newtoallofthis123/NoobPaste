@@ -13,15 +13,17 @@ class Bin(db.Model):
     hash = db.Column(db.String(length=8), unique=True, nullable=True)
     content = db.Column(db.Text())
     lang = db.Column(db.String())
+    key = db.Column(db.UnicodeText())
     password = db.Column(db.String())
     author = db.Column(db.String())
     time = db.Column(db.String())
 
-    def __init__(self, title, hash, content, lang, author, time, password):
+    def __init__(self, title, hash, content, lang, key, author, time, password):
         self.title = title
         self.hash = hash
         self.content = content
         self.lang = lang
+        self.key = key
         self.author = author
         self.time = time
         self.password = password
@@ -36,6 +38,24 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(length=40))
     password_hashed = db.Column(db.String(length=240), nullable=False)
     time = db.Column(db.String())
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    def __unicode__(self):
+        return self.username
 
     def __init__(self, username, email, password_hashed, time):
         self.username = username

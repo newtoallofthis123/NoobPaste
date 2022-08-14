@@ -7,6 +7,11 @@ from flask_cors import CORS, cross_origin
 from paste.models import Bin, User
 from paste.forms import Register, Login
 from flask_login import login_user, logout_user
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib import sqla
+from flask_admin import helpers, expose
+import base64
 import os
 import hashlib
 
@@ -19,12 +24,24 @@ def paste():
     else:
         login = "false"
     latest_url = str(request.cookies.get('latest_url'))
+    flash("""
+        Important! For development, I recently installed flask-admin onto NoobPaste. This means that all the info in the database would now be visible to me. But, don't worry, your passwords would still be hashed hence are safe.
+        But I am unable to implement fernet encryption onto the actual paste content. Please don't post anything sensitive. Be safe! Read more at /blog/help_me 
+        """, category="warning")
     return render_template('home.html', joke=joke, author=author, latest_url=latest_url, login=login)
 
 @app.route('/about')
 def about():
     api_content = "#API Implementation in Python\n\n#POST API\n\nimport requests\nimport json\n\nurl = 'https://noobpaste.herokuapp.com'\n\nparams={'title': 'title', 'paste_content': 'paste_content', 'author': 'author', 'lang': 'python', 'password': 'None'}\ndata = requests.post(f'{url}/post', params=params).content\njson_data = json.loads(data)\nprint(json_data)\n\n#get API\n\ndata = requests.get(f'{url}/api/<hash>/<password>'\njson_data = json.loads(data)\nprint(json_data)\n# By NoobScience 2022"
     return render_template('about.html', ran_fact=ran_fact(), api_content=api_content)
+
+@app.route('/blog')
+def blog():
+    return render_template("blog.html", ran_quote=ran_quote())
+
+@app.route('/blog/<blob>')
+def blog_article(blob):
+    return render_template(f'blog/{blob}.html', ran_quote=ran_quote())
 
 @app.route('/<hash>')
 def paste_shortcut(hash):
@@ -69,10 +86,17 @@ def code_edit():
 def code_editor(lang, theme, keybindings, font):
     return render_template('code_editor.html', lang=lang, ran_quote=ran_quote(), theme=theme, keybindings=keybindings, font=font)
 
+@app.route('/md_editor')
+def md_editor():
+    return render_template("md_editor.html", ran_quote=ran_quote())
+
 @app.route('/create_temp', methods=["GET", "POST"])
 def create_render():
     if request.method == "POST":
         language = request.form.get("language")
+        if language == "✨ Just Select a Language and Start Writing!":
+            flash("Enter A Valid Language from the drop down", category="danger")
+            return redirect(f'/')
         return redirect(f'/create/{language}')
 
 @app.route('/create/<lang>', methods=["GET", "POST"])
@@ -87,12 +111,12 @@ def create_123():
 def password_check(hash):
     password_to_check = request.form.get("password")
     paste_info = get_db(hash)
-    if paste_info.password == password_to_check:
+    if password_match_engine(paste_info.password, password_to_check):
             url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
             short_url = tinyurl(url)
             shortpaw_url=shortpaw(url)
             qr_code_engine(short_url)
-            decrypted_content = str(paste_info.content).replace("b'", "")
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
     else:
         return redirect(f'/password/{hash}')
@@ -110,9 +134,9 @@ def password(hash):
 def password_edit_check(hash):
     password_to_check = request.form.get("password")
     paste_info = get_db(hash)
-    if paste_info.password == password_to_check:
+    if password_match_engine(paste_info.password, password_to_check):
             url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
-            decrypted_content = str(paste_info.content).replace("b'", "")
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste_edit.html', paste_info=paste_info, ran_quote=ran_quote(), content=decrypted_content)
     else:
         return redirect(f'/password_edit/{hash}')
@@ -130,7 +154,7 @@ def password_edit(hash):
 def edit_done():
     if request.method == "POST":
         content = censor(request.form.get("paste_content"))
-        password = request.form.get("password")
+        password = hash_engine(request.form.get("password"))
         title = request.form.get("title")
         author = request.form.get("author")
         language = request.form.get("language")
@@ -140,7 +164,7 @@ def edit_done():
         short_url = tinyurl(url)
         shortpaw_url = shortpaw(url)
         qr_code_engine(url)
-        decrypted_content = str(paste_info["content"]).replace("b'", "")
+        decrypted_content = decrypt(paste_info["content"], paste_info["key"])
         page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
         page_response.set_cookie('latest_url', paste_info["hash"])
@@ -155,10 +179,19 @@ def edit(hash):
     else:
         if paste_info.password == "None":
             url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
-            decrypted_content = str(paste_info.content).replace("b'", "")
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste_edit.html', paste_info=paste_info, ran_quote=ran_quote(), content=decrypted_content)
         else:
             return redirect(f'/password_edit/{hash}')    
+
+@app.route('/delete/<hash>')
+def delete(hash):
+    paste_info = del_db(hash)
+    if paste_info == "No Such Paste":
+        return redirect('/404')
+    else:
+        flash(f'Deleted Paste with hash: {hash}')
+        return redirect('/')
 
 @app.route('/paste/<hash>')
 def paste_engine(hash):
@@ -171,7 +204,8 @@ def paste_engine(hash):
             short_url = tinyurl(url)
             shortpaw_url = shortpaw(url)
             qr_code_engine(short_url)
-            decrypted_content = str(paste_info.content).replace("b'", "")
+            print(paste_info.key)
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
         else:
             return redirect(f'/password/{hash}')
@@ -186,7 +220,7 @@ def done():
             content = censor(request.form.get("paste_content"))
         password_check = request.form.get("password_check")
         if password_check == "on":
-            password = request.form.get("password")
+            password = hash_engine(request.form.get("password"))
         else:
             password = "None"
         custom_check = request.form.get("custom_check")
@@ -202,7 +236,8 @@ def done():
         short_url = tinyurl(url)
         shortpaw_url = shortpaw(url)
         qr_code_engine(url)
-        decrypted_content = str(paste_info["content"]).replace("b'", "")
+        print(paste_info["key"])
+        decrypted_content = decrypt(paste_info["content"], paste_info["key"])
         page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
         page_response.set_cookie('latest_url', paste_info["hash"])
@@ -242,6 +277,31 @@ def login():
                 login_response.set_cookie('username', form.username.data)
                 login_response.set_cookie('password', user_info.password_hashed)
                 return login_response
+            else:
+                flash(f'Check your Password and try again', category="danger")
+        else:
+            flash(f'Error while logging you in as {form.username.data}', category="danger")
+    if form.errors != {}:
+        for error_msg in form.errors.values():
+            flash(f'There was an error while logging in user: {error_msg}', category="danger")
+    return render_template('login.html', form=form)
+
+@app.route('/admin_login', methods=["GET", "POST"])
+def admin_login():
+    logout_user()
+    form = Login()
+    if form.validate_on_submit():
+        hashed_password = hash_engine(form.password.data)
+        user_info = login_engine(form.username.data)
+        if user_info is not None:
+            if password_match_engine(user_info.password_hashed, form.password.data):
+                if user_info.username == "noobscience123":
+                    login_user(user_info)
+                    flash(f'You are logged in as {form.username.data}', category="success")
+                    login_response = make_response(redirect('/admin'))
+                    return login_response
+                else:
+                    return redirect('/login')
             else:
                 flash(f'Check your Password and try again', category="danger")
         else:
@@ -332,10 +392,6 @@ def api():
         return jsonify(paste_response)
     else:
         return "Only POST requests allowed on this route, try /api/paste_id"
-
-@app.route('/login_error')
-def login_error():
-    return render_template("login_error.html")
 
 @app.post('/gravatar')
 def gravatar():

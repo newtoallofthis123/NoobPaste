@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<figure style="text-align: center; padding-top: 12px;">
+    <blockquote class="blockquote">
+    <p class="lead text">{{ ran_quote[0] }}</p>
+    </blockquote>
+    <figcaption class="blockquote-footer text">
+        <cite title="Source Title">{{ ran_quote[1] }}</cite>
+    </figcaption>
+</figure>
+<h1 class="sub_heading" style="color: #212121;">Write Rich Text here</h1>
+<div style="margin-left: 12%; margin-right: 12%;">
+	<p class="lead text">And We'll take care of the rest</p>
+    <form action="/done" method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+            <input type="text" class="form-control" placeholder="Enter Title" aria-label="Username" aria-describedby="basic-addon1" name="title" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+        </div>
+        {% if current_user.is_authenticated %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+                <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" value="{{ (current_user.username) }}">
+            </div>
+        {% else %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+                <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+            </div>
+        {% endif %}
+        <input type="hidden" name="language" value="rich">
+        <input type="hidden" name="paste_content" id="content">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <div class="input-group-text" style="padding-bottom: 12px;">
+                    <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="password_check">
+                </div>
+            </div>
+            <input type="text" class="form-control" id="password" placeholder="Enter Password (Optional but Recommended)" aria-describedby="inputGroupFileAddon03" aria-label="Upload" name="password">
+        </div>
+        <p class="lead text">Rich WYSIWYG Editor Powered by <a href="https://alex-d.github.io/Trumbowyg/" class="link">Trumbowyg</a></p>
+		<div id="editor" style="background-color: #f0f0f0;"></div>
+        <div style="text-align: center;">
+            <button type="submit" id="language_btn">Continue <i class="bi bi-arrow-right"></i></button>
+        </div>
+    </form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/trumbowyg.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/colors/ui/trumbowyg.colors.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/ui/trumbowyg.emoji.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/colors/trumbowyg.colors.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/emoji/trumbowyg.emoji.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/fontfamily/trumbowyg.fontfamily.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/indent/trumbowyg.indent.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/noembed/trumbowyg.noembed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/pasteembed/trumbowyg.pasteembed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/plugins/resizimg/trumbowyg.resizimg.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/ui/trumbowyg.min.css">
+
+<script>
+	$('#editor').trumbowyg({
+	    btns: [
+	        ['viewHTML'],
+	        ['undo', 'redo'], // Only supported in Blink browsers
+	        ['formatting'],
+	        ['strong', 'em', 'del'],
+	        ['superscript', 'subscript'],
+	        ['link'],
+	        ['insertImage'],
+            ['noembed'],
+	        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+            ['foreColor', 'backColor'],
+            ['fontfamily'],
+            ['fontsize'],
+            ['indent', 'outdent'],
+	        ['unorderedList', 'orderedList'],
+	        ['horizontalRule'],
+	        ['removeformat'],
+	        ['fullscreen']
+	    ],
+	    autogrow: true,
+	    autogrowOnEnter: true,
+	    imageWidthModalEdit: true,
+	    minimalLinks: true,
+	    defaultLinkTarget: '_blank',
+        plugins: {
+            fontsize: {
+                sizeList: [
+                    '18px',
+                    '24px',
+                    '48px'
+                ]
+            }
+        }
+	});
+	$("#editor").keyup(function(){
+        console.log($('#editor').trumbowyg('html'))
+		$("#content").attr("value", $('#editor').trumbowyg('html'))
+	})
+</script>
+
+{% endblock %}

@@ -1,29 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Asap&family=Gluten&family=JetBrains+Mono:ital,wght@1,600&family=Josefin+Sans&family=Karla&family=Noto+Sans+Mono&family=Oxygen+Mono&family=Permanent+Marker&family=Noto+Sans&family=Ubuntu&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC&family=Archivo+Black&family=Concert+One&family=Hammersmith+One&family=Montserrat&family=Poiret+One&family=Poppins:wght@300;400&family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+::-moz-selection { /* Code for Firefox */
+  color: #ECECF2;
+  background: #1A15F0;
+}
+
+::selection {
+  color: #ECECF2;
+  background: #1A15F0;
+}
 
 #body{
-    --main_bg: #363434;
-    --nav_bg: #5C5757;
-    --primary_color: #62929A;
-    --secondary_color: #EFECEC;
-    --link_color: #aceeeb;
-    --link_hover_color: #60ebdf;
+    --main_bg: #f0f0f0;
+    --nav_bg: #212121;
+    --primary_color: #212121;
+    --secondary_color: #212121;
+    --nav_secondary_color: #f0f0f0;
+    --link_color: #2835f1;
+    --link_hover_color: #202ef0;
     background-color: var(--main_bg);
+    --bs-body-color: #212121;
+    --bs-body-font-family: 'Poppins', sans-serif;
+    overscroll-behavior: none;
 }
 .navStyle{
     background-color: var(--nav_bg);
 }
 
 .navTitle{
-    font-size: 1.8rem;
-    color: var(--secondary_color);
-    font-family: 'Poiret One', sans-serif;
+    font-size: 2.4rem;
+    color: var(--nav_secondary_color);
+    font-family: 'Architects Daughter', cursive;
 }
 
 .nav_text{
     font-size: 1.4rem;
-    color: var(--secondary_color);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;;
+    color: var(--nav_secondary_color);
+    font-family: 'Montserrat', sans-serif;
     margin: 1.8rem;
     font-weight: 300;
 }
@@ -31,7 +46,7 @@
 .hover_animation_underline {
     display: inline-block;
     position: relative;
-    color: var(--secondary_color);
+    color: var(--nav_secondary_color);
 }
 .hover_animation_underline:after {
     content: '';
@@ -41,7 +56,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--secondary_color);
+    background-color: var(--nav_secondary_color);
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
@@ -56,14 +71,19 @@
     padding-bottom: 2%;
 }
 #language_btn{
-    padding: 8px;
+    padding: 12px;
     margin-top: 2%;
     margin-bottom: 2%;
-    border-width: 0;
+    border-width: 2px;
     background-color: #e3dce7;
     color: #212121;
     font-family: Asap, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     border-radius: 12px;
+    transition-delay: 25ms;
+    transition-duration: 50ms;
+}
+#language_btn:hover{
+    border-radius: 24px;
 }
 option{
     background-color: #ebe8ec;
@@ -83,14 +103,20 @@ option{
     font-size: 1rem;
 }
 .main_title{
-    font-family: 'Archivo Black', sans-serif;
+    font-family: 'Poiret One', sans-serif;
     font-size: 5.6rem;
     color: var(--primary_color);
-    background: -webkit-linear-gradient(#4ECCA3, #9ee9d0);
+    background: -webkit-linear-gradient(#1f2020, #222423);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-align: center;
     padding: 1.8rem;
+}
+
+.error_div{
+    display: none;
+    padding: 5%;
+    font-size: 1.8rem;
 }
 
 @media only screen and (max-width: 700px) {
@@ -100,8 +126,27 @@ option{
     .main_text{
         font-size: 1rem;
     }
+    .col-sm{
+        text-align: center;
+        margin: 1.8rem;
+    }
+    .end_div{
+        padding: 0px;
+        margin: 0px;
+    }
+    .article_div{
+        display: none;
+    }
+    .error_div{
+        display: block;
+    }
 }
 
+@media only screen and (max-width: 300px) {
+    .error_div{
+        display: block;
+    }
+}
 
 .main_text{
     color: var(--secondary_color);
@@ -110,10 +155,41 @@ option{
     font-weight: 300;
 }
 
+.div_heading{
+    color: var(--secondary_color);
+    font-family: 'Poiret One', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    text-align: center;
+}
+
+.div_text{
+    color: var(--secondary_color);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.div{
+    padding: 12px;
+    padding-top: 0px;
+}
+
 .text_div{
     padding: 1.4rem;
     margin-left: 5%;
     margin-right: 5%;
+}
+
+#content {
+    color: #212121;
+    padding: 5%;
+    background-color: #f0f0f0;
+}
+
+#content h1{
+    color: #212121;
+    font-family: 'Poppins', sans-serif;
 }
 
 .link{
@@ -191,6 +267,37 @@ option{
 }
 
 #error{
+    width: 50%;
+    height: 50%;
+}
+
+.main_img{
+    width: 60%;
+    height: 60%;
+}
+
+.card:hover{
+    animation: pulse;
+    animation-duration: 1s;
+}
+
+.end_div{
+    padding-top: 4%; 
+    padding-bottom: 4%; 
+    margin-top: 12px; 
+    margin-bottom: 2%;
+}
+
+.article_div{
+    margin: 2%;
+}
+
+.img_div{
+    text-align: center;
+    padding: 12px;
+}
+
+#full {
     width: 50%;
     height: 50%;
 }
