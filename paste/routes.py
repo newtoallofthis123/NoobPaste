@@ -204,7 +204,6 @@ def paste_engine(hash):
             short_url = tinyurl(url)
             shortpaw_url = shortpaw(url)
             qr_code_engine(short_url)
-            print(paste_info.key)
             decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
         else:
@@ -236,7 +235,6 @@ def done():
         short_url = tinyurl(url)
         shortpaw_url = shortpaw(url)
         qr_code_engine(url)
-        print(paste_info["key"])
         decrypted_content = decrypt(paste_info["content"], paste_info["key"])
         page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
