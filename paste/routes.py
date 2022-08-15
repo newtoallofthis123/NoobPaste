@@ -84,7 +84,7 @@ def code_edit():
 
 @app.route('/editor/lang=<lang>&theme=<theme>&keybindings=<keybindings>&font=<font>', methods=["GET", "POST"])
 def code_editor(lang, theme, keybindings, font):
-    return render_template('code_editor.html', lang=lang, ran_quote=ran_quote(), theme=theme, keybindings=keybindings, font=font)
+    return render_template('code_editor.html', lang=lang, ran_quote=ran_quote(), hash=hash_gen_engine(), theme=theme, keybindings=keybindings, font=font)
 
 @app.route('/md_editor')
 def md_editor():

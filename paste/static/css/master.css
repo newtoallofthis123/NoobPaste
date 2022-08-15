@@ -301,3 +301,21 @@ option{
     width: 50%;
     height: 50%;
 }
+
+.div_range {
+  width: 80%;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: #f0f0f0;
+  border-radius: 24px;
+}
+
+.slider:hover {
+  opacity: 1;
+}

@@ -6,6 +6,9 @@
             font-family: '{{ font }}', 'Oxygen Mono', 'Courier New', Courier, monospace;
             font-size: 1rem;
         }
+        #canvas{
+            margin: 12px;
+        }
     </style>
 <div style="background-color: #272822;">
     <div class="container" style="padding: 12px;">
@@ -26,10 +29,16 @@
             </div>
         </div>
     </div>
+    <div class="div_range" style="padding: 5px;">
+        <span class="main_text" style="color: #f0f0f0;">Change the Width: </span>
+        <span>
+            <input type="range" min="1" max="100" value="100" class="slider" id="div_resizer">
+        </span>
+    </div>
 </div>
 <form action="/done" method="post">
     <div style="padding: 5%;" id="canvas">
-        <textarea name="three_dots" id="three_dots" cols="1" rows="1" class="textarea"> 🔴🟢🟡</textarea>
+        <textarea name="three_dots" id="three_dots" cols="1" rows="1" class="textarea"> 🔴🟢🟡 Untitled</textarea>
         <textarea name="paste_content" id="editor_content" onkeyup="if (this.scrollHeight > this.clientHeight) this.style.height = this.scrollHeight + 'px';" style="overflow:hidden; transition: height 0.2s ease-out;" spellcheck="true" autofocus="true"></textarea>
     </div>
     <div style="background-color: #272822; padding-right: 12px; padding-left: 12px; padding-bottom: 12px;">
@@ -100,7 +109,7 @@
                     <option value="text">Text</option>
                     <option value="lua">Lua</option>
                     <option value="java">Java</option>
-                    <option value="json">JSON</option>
+                    <option value="sql">SQL</option>
                     <option value="php">PHP</option>
                     <option value="xml">XML</option>
                     <option value="cpp">C++</option>
@@ -135,7 +144,18 @@
                     <option value="material-darker">Material Darker</option>
                     <option value="material-palenight">Material PaleNight</option>
                     <option value="material-ocean">Material Ocean</option>
-                    <option value="gruvbox-dark">GruvBox Dark</option>
+                    <option value="3024-day">3024-Day</option>
+                    <option value="3024-night">3024-Night</option>
+                    <option value="lucario">Lucario</option>
+                    <option value="neo">Neo</option>
+                    <option value="material">Material</option>
+                    <option value="paraiso-dark">Paraiso-Dark</option>
+                    <option value="paraiso-night">Paraiso-Night</option>
+                    <option value="ambiance">Ambiance</option>
+                    <option value="blackboard">BlackBoard</option>
+                    <option value="elegant">Elegant</option>
+                    <option value="railscasts">RailCasts</option>
+                    <option value="rubyblue">RubyBlue</option>
                 </select>
                 <label for="basic-url" class="form-label lead" style="padding: 12px;">Choose KeyBindings</label>
                 <select class="form-select" aria-label="Default select example" name="keybindings" id="keybindings">
@@ -169,7 +189,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary"><a href="" class="btn_link" download>Download</a></button>
+                <button type="button" class="btn btn-primary"><a href="" class="btn_link" download="{{ hash }}">Download</a></button>
             </div>
         </div>
     </div>
@@ -199,6 +219,9 @@
     <script>
         $(document).ready(function(){
             $("#submit_btn").click(execFunc)
+            $("#div_resizer").change(function(){
+                $("#canvas").css("width", $("#div_resizer").val() + "%")
+            })
         });
         function execFunc(){
             window.location = "/editor/lang=" + document.getElementById("language").value + "&theme=" + document.getElementById("theme").value + "&keybindings=" + document.getElementById("keybindings").value + "&font=" + document.getElementById("font").value;
@@ -226,12 +249,12 @@
 			cursorHeight: 1,
             viewportMargin: Infinity,
         });
-        codemirrorEditor.setSize("100%", "36vw");
+        codemirrorEditor.setSize("100%", "100%");
         const three_dots = CodeMirror.fromTextArea(document.getElementById('three_dots'), {
             theme: "{{ theme }}",
-            readOnly: true,
+            readOnly: false,
             cursorBlinkRate: 0,
-            cursorHeight: 0,
+            cursorHeight: 1,
             viewportMargin: Infinity,       
         });
         three_dots.setSize("100%", "50%")
@@ -251,8 +274,8 @@
         document.querySelector("#colorPicker1").addEventListener("input", changeColor)
         var colorPicker = document.querySelector("#colorPicker")
         var colorPicker1 = document.querySelector("#colorPicker1")
-        colorPicker.value = "#c6d7d3"
-        colorPicker1.value = "#0fe6ee"
+        colorPicker.value = "#004cff"
+        colorPicker1.value = "#fa0505"
         changeColor(false)
         function changeColor(event) {
             var canvas_color = document.getElementById("canvas");
