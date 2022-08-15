@@ -122,6 +122,9 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='theme/monokai.css') }}"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/keymap/sublime.js"></script>
     <script>
+        $(document).ready(function(){
+            $("#paste_content")
+        })
         document.getElementById("lang").onchange = execFunc;
         function execFunc(){
             window.location.replace("/create/" + document.getElementById("lang").value);

@@ -49,26 +49,57 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent" style="padding-left: 10%;">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link link_nav hover_animation_underline" aria-current="page" href="/about"><span class="nav_text">API</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link link_nav hover_animation_underline" href="/editor"><span class="nav_text">Editor</span></a>
+                </li> -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="nav_text">About</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/about">About</a></li>
+                        <li><a class="dropdown-item" href="/about#api">API</a></li>
+                        <li><a class="dropdown-item" href="/guide">Guide</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="https://github.com/newtoallofthis123/NoobPaste">GitHub</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="nav_text">Editor</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/editor">Beauty Editor</a></li>
+                        <li><a class="dropdown-item" href="/md_editor">Rich Text</a></li>
+                    </ul>
                 </li>
                 {% if current_user.is_authenticated %}
-                <div class="d-flex">
-                    <div style="align-items: center;"><a href="/authors/{{ current_user.username }}" class="lead text" style="text-decoration: none; color: #f0f0f0;"><img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" > {{ current_user.username }}</a></div>
-                    <li class="nav-item">
-                        <a class="nav-link link_nav hover_animation_underline" href="/logout"><span class="nav_text"><i class="bi bi-box-arrow-right"></i> LogOut</span></a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">{{ current_user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/authors/{{ current_user.username }}">Your Pastes</a></li>
+                            <li><a class="dropdown-item" href="/logout">LogOut</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/tos">Terms of Services</a></li>
+                        </ul>
                     </li>
-                </div>
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link link_nav hover_animation_underline" href="/register"><span class="nav_text">Register</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link link_nav hover_animation_underline" href="/login"><span class="nav_text">Login</span></a>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">Account</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/login">Login</a></li>
+                        <li><a class="dropdown-item" href="/register">Sign Up</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/tos">Terms of Services</a></li>
+                    </ul>
+                </li>
                 {% endif %}
             </ul>
         </div>

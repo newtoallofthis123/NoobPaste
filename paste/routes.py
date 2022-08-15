@@ -24,10 +24,6 @@ def paste():
     else:
         login = "false"
     latest_url = str(request.cookies.get('latest_url'))
-    flash("""
-        Important! For development, I recently installed flask-admin onto NoobPaste. This means that all the info in the database would now be visible to me. But, don't worry, your passwords would still be hashed hence are safe.
-        But I am unable to implement fernet encryption onto the actual paste content. Please don't post anything sensitive. Be safe! Read more at /blog/help_me 
-        """, category="warning")
     return render_template('home.html', joke=joke, author=author, latest_url=latest_url, login=login)
 
 @app.route('/about')
@@ -54,7 +50,7 @@ def paste_shortcut(hash):
             short_url = tinyurl(url)
             shortpaw_url = shortpaw(url)
             qr_code_engine(short_url)
-            decrypted_content = str(paste_info.content).replace("b'", "")
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content)
         else:
             return redirect(f'/password/{hash}')
@@ -101,7 +97,7 @@ def create_render():
 
 @app.route('/create/<lang>', methods=["GET", "POST"])
 def create(lang):
-    return render_template('search.html', language=lang, ran_quote=ran_quote())
+    return render_template('search.html', language=lang, ran_quote=ran_quote(), key=key_gen())
 
 @app.route('/create')
 def create_123():
@@ -135,7 +131,6 @@ def password_edit_check(hash):
     password_to_check = request.form.get("password")
     paste_info = get_db(hash)
     if password_match_engine(paste_info.password, password_to_check):
-            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
             decrypted_content = decrypt(paste_info.content, paste_info.key)
             return render_template('paste_edit.html', paste_info=paste_info, ran_quote=ran_quote(), content=decrypted_content)
     else:
@@ -163,9 +158,8 @@ def edit_done():
         url = "https://noobpaste.herokuapp.com/paste/" + paste_info["hash"]
         short_url = tinyurl(url)
         shortpaw_url = shortpaw(url)
-        qr_code_engine(url)
         decrypted_content = decrypt(paste_info["content"], paste_info["key"])
-        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
+        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
         page_response.set_cookie('latest_url', paste_info["hash"])
         page_response.set_cookie('time', time_cal())
@@ -236,7 +230,7 @@ def done():
         shortpaw_url = shortpaw(url)
         qr_code_engine(url)
         decrypted_content = decrypt(paste_info["content"], paste_info["key"])
-        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, content=decrypted_content))
+        page_response = make_response(render_template('success.html', paste_info=paste_info, short_url=short_url, shortpaw=shortpaw_url, ran_fact=ran_fact(), content=decrypted_content))
         page_response.set_cookie('author', paste_info["author"])
         page_response.set_cookie('latest_url', paste_info["hash"])
         page_response.set_cookie('time', time_cal())

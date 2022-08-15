@@ -45,9 +45,9 @@ def time_cal():
 
 def add_to_db(title, content, author, lang, password):
     hash = hash_gen_engine()
-    key = Fernet.generate_key()
+    key = Fernet.generate_key().decode()
     time = time_cal()
-    content = encrypt(content, key)
+    content = encrypt(content, key).decode()
     paste_info = Bin(title=title, hash=hash, content=content, lang=lang, key=key, author=author, time=time, password=password)
     db.session.add(paste_info)
     db.session.commit()
@@ -85,12 +85,13 @@ def edit_db(author, title, password, content, language, hash):
     paste_content.author = author
     paste_content.password = password
     paste_content.title = title
-    paste_content.content = content
+    paste_content.content = encrypt(content, paste_content.key).decode()
+    encrypted_content = encrypt(content, paste_content.key).decode()
     paste_content.language = language
     db.session.add(paste_content)
     db.session.commit()
     db.session.refresh(paste_content)
-    paste_info_content = {"title": title, "hash": hash, "content": content, "lang": language, "key": paste_content.key, "author": author, "password": password}
+    paste_info_content = {"title": title, "hash": hash, "content": encrypted_content, "lang": language, "key": paste_content.key, "author": author, "password": password}
     return paste_info_content
 
 def del_db(hash):
@@ -180,7 +181,7 @@ def check_hash_duplicate(hash):
 
 def custom_add_to_db(title, content, author, lang, custom_hash, password):
     hash = check_hash_duplicate(custom_hash)
-    key = Fernet.generate_key()
+    key = Fernet.generate_key().decode()
     time = time_cal()
     content = encrypt(content, key)
     paste_info = Bin(title=title, hash=hash, content=content, lang=lang, key=key, author=author, time=time, password=password)
@@ -191,13 +192,17 @@ def custom_add_to_db(title, content, author, lang, custom_hash, password):
 
 # Please help Me!
 
+def key_gen():
+    key = Fernet.generate_key()
+    return key
+
 def encrypt(content, key):
-    # fernet = Fernet(key)
-    # encrypted_content = fernet.encrypt(content.encode())
-    return content
+    fernet = Fernet(key)
+    encrypted_content = fernet.encrypt(content.encode())
+    return encrypted_content
 
 def decrypt(content, key):
     # print(bytes(key, encoding='utf8').decode())
-    # fernet = Fernet(key)
-    # decrypted_content = (fernet.decrypt(content)).decode()
-    return content
+    fernet = Fernet(key.encode())
+    decrypted_content = (fernet.decrypt(content.encode())).decode()
+    return decrypted_content
