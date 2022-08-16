@@ -361,29 +361,150 @@ def news_letter():
     news_letter = send_news_letter(title, content)
     return "Done"
 
-@app.route('/post', methods=["POST"])
-def api():
+@app.route('/dino', methods=["get", "post", "put", "delete"])
+def dino():
+    if request.method == "GET":
+        hash = str(request.values.get("hash"))
+        if hash == None:
+            return jsonify("Okay! You do know Dino 🤖 needs the [hash] to give you the paste content!")
+        else:
+            paste_content = get_db(hash)
+            if paste_content == "No Such Paste":
+                return jsonify(f'No Such Paste with hash: {hash} found.')
+            else:
+                content = decrypt(paste_content.content, paste_content.key)
+                response = {
+                    "status_code" : 200,
+                    "service": "NoobPaste Dino API v.2.1",
+                    "hash": hash,
+                    "authentication_through": paste_content.author,
+                    "response": {
+                        "title": paste_content.title,
+                        "author": paste_content.author,
+                        "paste_content": {
+                            "lang": paste_content.lang,
+                            "content": content,
+                            "time_modified": paste_content.time,
+                        }
+                    },
+                    "time_of_request": time_cal(),
+                    "encryption": "Content Decrypted through key stored in database.",
+                    "url": f'https://noobpaste.herokuapp.com/{hash}',
+                    "short_url": tinyurl(f'https://noobpaste.herokuapp.com/{hash}'),
+                }
+                print(paste_content.password)
+                if paste_content.password == "None":
+                    return jsonify(response)
+                else:
+                    password = str(request.values.get("password"))
+                    if password == None:
+                        return jsonify("The paste is protected by password. Enter the password as a parameter and try again")
+                    else:
+                        print(password_match_engine(paste_content.password, password))
+                        if password_match_engine(paste_content.password, password):
+                            return jsonify(response)
+                        else:
+                            return jsonify("The paste is protected by password. Enter the Correct password as a parameter and try again")
     if request.method == "POST":
         title = request.values.get("title")
-        content = censor(request.values.get("paste_content"))
+        if title == None:
+            return jsonify("Send in a valid title")
         author = request.values.get("author")
-        language = request.values.get("lang")
+        if author == None:
+            author = "Anon"
         password = request.values.get("password")
-        paste_info = add_to_db(title, content, author, language, password)
-        url = "https://noobpaste.herokuapp.com/paste/" + paste_info["hash"]
-        short_url = tinyurl(url)
-        paste_response = {
-            "title": paste_info["title"],
-            "author": paste_info["author"],
-            "content": paste_info["content"],
-            "password": paste_info["password"],
-            "lang": paste_info["lang"],
-            "id": paste_info["hash"],
-            "short_url": short_url
+        if password == None:
+            password = "None"
+        content = request.values.get("content")
+        if content == None:
+            return jsonify("Send in valid content to store")
+        lang = request.values.get("lang")
+        if lang == None:
+            return jsonify("Send in a valid Language")
+        paste_content = add_to_db(title=title, content=content, author=author, lang=lang, password=password)
+        content = decrypt(paste_content["content"], paste_content["key"])
+        response = {
+            "status_code" : 200,
+            "service": "NoobPaste Dino API v.2.1",
+            "hash": paste_content["hash"],
+            "authentication_through": paste_content["author"],
+            "response": {
+                "title": paste_content["title"],
+                "author": paste_content["author"],
+                "paste_content": {
+                    "lang": paste_content["lang"],
+                    "content": content,
+                    "time_modified": time_cal(),
+                }
+            },
+            "time_of_request": time_cal(),
+            "encryption": "Content Decrypted through key stored in database.",
+            "url": f'https://noobpaste.herokuapp.com/{paste_content["hash"]}',
+            "short_url": tinyurl(f'https://noobpaste.herokuapp.com/{paste_content["hash"]}'),
         }
-        return jsonify(paste_response)
+        return jsonify(response)
+    if request.method == "PUT":
+        hash = str(request.values.get("hash"))
+        if hash == None:
+            return jsonify("Okay! You do know Dino 🤖 needs the [hash] to give you the paste content!")
+        else:
+            paste_content = get_db(hash)
+            if paste_content == "No Such Paste":
+                return jsonify(f'No Paste with hash: {hash} found.')
+            else:
+                paste_content_1 = decrypt(paste_content.content, paste_content.key)
+                title = request.values.get("title")
+                if title == None:
+                    title = paste_content.title
+                author = request.values.get("author")
+                if author == None:
+                    author = paste_content.author
+                password = request.values.get("password")
+                if password == None:
+                    password = paste_content.password
+                content = request.values.get("content")
+                if content == None:
+                    content = paste_content_1
+                lang = request.values.get("lang")
+                if lang == None:
+                    lang = paste_content.lang
+                paste_edited = edit_db(author=author, title=title, content=paste_content_1, language=lang, password=password, hash=paste_content.hash)
+                response = {
+                    "status_code" : 200,
+                    "service": "NoobPaste Dino API v.2.1",
+                    "hash": paste_edited["hash"],
+                    "authentication_through": paste_edited["author"],
+                    "response": {
+                        "title": paste_edited["title"],
+                        "author": paste_edited["author"],
+                        "paste_content": {
+                            "lang": paste_edited["lang"],
+                            "content": content,
+                            "time_modified": time_cal(),
+                        }
+                    },
+                    "time_of_request": time_cal(),
+                    "encryption": "Content Decrypted through key stored in database.",
+                    "url": f'https://noobpaste.herokuapp.com/{paste_edited["hash"]}',
+                    "short_url": tinyurl(f'https://noobpaste.herokuapp.com/{paste_edited["hash"]}'),
+                }
+                return jsonify(response)
+    if request.method == "DELETE":
+        hash = str(request.values.get("hash"))
+        if hash == None:
+            return jsonify("Okay! You do know Dino 🤖 needs the [hash] to give you the paste content!")
+        else:
+            paste_content = del_db(hash)
+            if paste_content == "No Such Paste":
+                return jsonify(f'Deleted Paste with hash: {hash}')
+            else:
+                return jsonify(f'Successfully Deleted Paste with hash: {hash}')
     else:
-        return "Only POST requests allowed on this route, try /api/paste_id"
+        return jsonify("NoobPaste Dino API 🤖 v.2.1: For Full Docs: /docs")
+
+@app.route('/docs')
+def docs():
+    return render_template('docs.html', ran_quote=ran_quote())
 
 @app.post('/gravatar')
 def gravatar():
@@ -403,30 +524,6 @@ def method_not_allowed_error(error):
 @app.errorhandler(500)
 def server_error(error):
     return render_template("error.html", error_code=500)
-
-@app.route('/api/<hash>/<password>', methods=["GET"])
-def get_api(hash, password):
-    if request.method == "GET":
-        paste_info = get_db(hash)
-        if paste_info == "No Such Paste":
-            return f'No Paste with Paste ID: {hash}'
-        else:
-            if paste_info.password == password:
-                url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
-                short_url = tinyurl(url)
-                paste_response = {
-                    "title": paste_info.title,
-                    "author": paste_info.author,
-                    "content": paste_info.content,
-                    "lang": paste_info.lang,
-                    "id": paste_info.hash,
-                    "short_url": short_url
-                }
-                return jsonify(paste_response)
-            else:
-                return f'Wrong Password for {hash}; If there is no password set, try to send in password as "None"'
-    else:
-        return "Only GET requests allowed on this route. Try /api"
 
 @app.route('/license')
 def license():

@@ -38,7 +38,7 @@ class NoobPasteAdminIndexView(AdminIndexView):
         if not login.current_user.is_authenticated:
             return redirect('/admin_login')
         if login.current_user.username == "noobscience123":
-        	return super(NoobPasteAdminIndexView, self).index()
+            return super(NoobPasteAdminIndexView, self).index()
         else:
         	return redirect('/admin_login')
 

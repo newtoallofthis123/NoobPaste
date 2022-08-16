@@ -319,3 +319,21 @@ option{
 .slider:hover {
   opacity: 1;
 }
+
+.code{
+    font-family: 'Fira Code', Consolas, monospace;
+    font-size: 1rem;
+    background-color: #212121;
+    padding: 0.2rem;
+    border-radius: 12px;
+}
+
+.code_h2{
+    font-size: 24px;
+}
+
+#img{
+    width: 60%;
+    height: 60%;
+    margin: 2%;
+}
