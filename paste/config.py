@@ -8,14 +8,14 @@ class Config(object):
     SECRET_KEY = '4372093cd57da6dad99b7314'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = (
-        "postgres://noobscience:hBHDIXxW6Xp4QxCe7G2Ltp4VdrLgkECS@dpg-ccjbafarrk09pi2kdvog-a.oregon-postgres.render.com/np_db"
+        os.environ.get("db")
     )
 
 
 class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = (
-        "postgres://noobscience:hBHDIXxW6Xp4QxCe7G2Ltp4VdrLgkECS@dpg-ccjbafarrk09pi2kdvog-a.oregon-postgres.render.com/np_db"
+        os.environ.get("db")
     )
 
 class StagingConfig(Config):
