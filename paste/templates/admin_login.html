@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<main style="background-color: #212121; min-height: 100vh;">
+		<section>
+			<div style="display: flex; align-items: center; justify-content: center;">
+				<div class="login_div">
+					<h2 class="title" style="text-align: center; color: #f0f0f0; margin-top: 10%; margin-bottom: 2%;">Login</h2>
+					<form class="generated-form" method="POST" action="/admin">
+						<div class="form-floating mb-3">
+						    <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+						    <label for="username">Username</label>
+						</div>
+						<div class="form-floating">
+						    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+						    <label for="password">Password</label>
+						</div>
+						<div class="d-grid gap-2">
+							<button type="submit" class="btn btn-outline-light" style="margin-top: 5%;">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+{% endblock %}

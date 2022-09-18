@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h1 class="title" style="padding-top: 12px; text-align: center;">License for NoobPaste Code</h1>
+    <div style="padding: 12px; padding-left: 4%; text-align: center;">
+        <p class="lead text">
+            <span><a href="https://commons.wikimedia.org/wiki/File:License_icon-mit-2.svg"><img src="{{ url_for('static',filename='assets/svg/mit.svg') }}" alt="" style="width: 4%; padding-right: 12px;"></a></span>
+            MIT License
+        </p>
+    </div>
+    <p class="lead text" style="text-align: center;">See <a href="https://newtoallofthis123.github.io/license" class="link">Here</a></p>
+    <div style="margin: 12px; background-color: rgb(44, 42, 42); padding: 12px; border-radius: 12px;">
+        <code class="text">
+            The MIT License (MIT)
+            <br><br>
+            Copyright © 2021 NoobScience
+            <br><br>
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+            <br><br>
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+            <br><br>
+            THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.            
+        </code>
+    </div>
+    <div class="d-grid gap-2" style="margin-left: 4%; margin-right: 4%; margin-top: 12px; margin-bottom: 12px;">
+        <button class="btn btn-dark" style="background-color: rgb(115, 35, 243);"><a href="/create/text" class="btn_link">Paste Some Stuff</a></button>
+    </div>
+{% endblock %}

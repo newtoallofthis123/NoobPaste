@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <main style="background-color: #212121; min-height: 100vh;">
+        <section>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div class="login_div">
+                    <h2 class="title" style="text-align: center; color: #f0f0f0; margin-top: 10%; margin-bottom: 2%;">Login</h2>
+                    <form class="generated-form" method="POST" action="/register">
+                        {{ form.hidden_tag() }}
+                        {{ form.username(class="form-control", placeholder="Enter the UserName", style="margin: 1.2rem;") }}   
+                        {{ form.email(class="form-control", id="email", placeholder="Enter your Email Please", style="margin: 1.2rem;") }}
+                        {{ form.password(class="form-control", placeholder="Your Password Please", style="margin: 1.2rem;") }}
+                        {{ form.password_check(class="form-control", placeholder="Can you confirm it", style="margin: 1.2rem;") }}
+                        <div class="d-grid gap-2" style="margin-top: 5%;">
+                            <button type="button" class="btn btn-dark" id="otp_btn">Send OTP</button>
+                        </div>
+                        <div class="mb-3" id="otp_div" style="padding-top: 1.2rem;">
+                            <label for="otp" class="form-label" style="color: #f0e8e8;">📨 Enter The OTP</label>
+                            <input type="password" class="form-control" id="otp" placeholder="Enter OTP Sent">
+                            <div class="d-grid gap-2" style="margin-top: 2%;">
+                                <button type="button" class="btn btn-primary" id="otp_confirm_btn">Confirm OTP</button>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2" style="margin-top: 5%;">
+                            {{ form.submit(class="btn btn-outline-dark", id="submit_btn") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        $(document).ready(function(){
+            $("#otp_div").toggle()
+            $("#submit_btn").toggle()
+            $("#otp_btn").click(function(){
+                $.ajax({
+                    type: "get",
+                    url: "https://api.eva.pingutil.com/email",
+                    data: {"email": $("#email").val()},
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.data.deliverable == true){
+                            $("#otp_div").toggle()
+                            $.ajax({
+                                type: "post",
+                                url: "/otp",
+                                data: {"email": $("#email").val()},
+                                dataType: "json",
+                                success: function(response) {
+                                    var otp = response
+                                    $("#otp_confirm_btn").click(function(){
+                                        if ($("#otp").val() == otp){
+                                            $("#submit_btn").toggle()
+                                        }
+                                        else {
+                                            alert("You Enterer the Wrong OTP! Try again")
+                                        }
+                                    })
+                                },
+                                error: function(err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

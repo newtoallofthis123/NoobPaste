@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <style type="text/css">
+        .CodeMirror * {
+            font-family: '{{ font }}', 'Oxygen Mono', 'Courier New', Courier, monospace;
+            font-size: 1rem;
+        }
+        #canvas{
+            margin: 12px;
+        }
+    </style>
+    <form action="/done" method="post">
+        <div style="background-color: #272822;">
+            <div class="container" style="padding: 12px;">
+                <div class="row align-items-start">
+                    <div class="col">
+                        <input type="color" name="color" id="colorPicker">
+                        <input type="color" name="color1" id="colorPicker1">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" id="capture_btn">
+                            Capture Editor
+                        </button>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-dark" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample" id="convert_btn">
+                            Edit Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="div_range" style="padding: 5px;">
+                <span class="main_text" style="color: #f0f0f0;">Change the Width: </span>
+                <span>
+                    <input type="range" min="1" max="100" value="100" class="form-range" id="div_resizer">
+                </span>
+            </div>
+        </div>
+        <div style="padding: 5%;" id="canvas">
+            <textarea name="three_dots" id="three_dots" cols="1" rows="1" class="textarea"> 🔴🟢🟡 Untitled</textarea>
+            <textarea name="paste_content" id="editor_content" onkeyup="if (this.scrollHeight > this.clientHeight) this.style.height = this.scrollHeight + 'px';" style="overflow:hidden; transition: height 0.2s ease-out;" spellcheck="true" autofocus="true"></textarea>
+        </div>
+        <div style="background-color: #272822; padding-right: 12px; padding-left: 12px; padding-bottom: 12px;">
+            <h3 class="h3 lead" style="text-align: center; color: #EBF1CE; padding: 12px;">Convert to Paste</h3>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+                <input type="text" class="form-control" placeholder="Enter Title" aria-label="Username" aria-describedby="basic-addon1" name="title" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+            </div>
+            {% if current_user.is_authenticated %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+                    <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" value="{{ (current_user.username) }}">
+                </div>
+            {% else %}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1" style="background-color: #4ECCA3;"><span style="color: white; font-family: 'Oxygen Mono', monospace;">></span></span>
+                    <input type="text" class="form-control" placeholder="Enter Author Name" aria-label="Username" aria-describedby="basic-addon1" name="author" required style="font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                </div>
+            {% endif %}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <div class="input-group-text" style="padding-bottom: 12px;">
+                        <input type="checkbox" aria-label="Checkbox for following text input" style="margin-top: 5px;" name="password_check">
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="password" placeholder="Enter Password (Optional but Recommended)" aria-describedby="inputGroupFileAddon03" aria-label="Upload" name="password">
+            </div>
+            <input type="hidden" name="language" value="{{ lang }}">
+            <div class="d-grid gap-2" style="padding-bottom: 12px;">
+                <button class="btn btn-primary" type="submit" style="background-color: #4ECCA3;">Continue <i class="bi bi-arrow-right"></i></button>
+            </div>
+        </div>
+    </form>
+    <p class="lead text" style="text-align: center; padding-top: 12px; padding-bottom: 12px;">Made with ❤️ and a lot of <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="coffee" class="svg-inline--fa fa-coffee fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" width=24px viewBox="0 0 640 512"><path fill="currentColor" d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"></path></svg> by <a href="https://newtoallofthis123.github.io/About" class="link" target="_blank">NoobScience</a> ⚡</p>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Code Capture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="" id="img_canvas" class="img img-responsive">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"><a href="" class="btn_link" download>Download</a></button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                <h5 class="h5">Edit Settings</h5>
+                <label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Language</label>
+                <select class="form-select" aria-label="Default select example" name="language" id="language">
+                    <option selected value="{{ lang }}">{{ lang.capitalize() }}</option>
+                    <option value="python">Python</option>
+                    <option value="javascript">Javascript</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="text">Text</option>
+                    <option value="lua">Lua</option>
+                    <option value="java">Java</option>
+                    <option value="sql">SQL</option>
+                    <option value="php">PHP</option>
+                    <option value="xml">XML</option>
+                    <option value="cpp">C++</option>
+                    <option value="rust">Rust</option>
+                    <option value="powershell">Powershell</option>
+                    <option value="vbscript">VBScript</option>
+                    <option value="toml">TOML</option>
+                    <option value="swift">Swift</option>
+                    <option value="shell">Shell</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="perl">Perl</option>
+                    <option value="jsx">JSX</option>
+                    <option value="go">go</option>
+                </select>
+                <label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Favourite Theme</label>
+                <select class="form-select" aria-label="Default select example" name="theme" id="theme">
+                    <option selected value="dracula">Dracula</option>
+                    <option value="monokai">Monokai</option>
+                    <option value="bespin">Bespin</option>
+                    <option value="cobalt">Cobalt</option>
+                    <option value="ayu-dark">Ayu-Dark</option>
+                    <option value="base16-light">Base16-light</option>
+                    <option value="base16-dark">Base16-dark</option>
+                    <option value="mdn-like">MDN</option>
+                    <option value="neat">Neat</option>
+                    <option value="night">Night</option>
+                    <option value="nord">Nord</option>
+                    <option value="hopscotch">Hopscotch</option>
+                    <option value="Idea">Idea</option>
+                    <option value="base16-dark">Base16 Dark</option>
+                    <option value="base16-light">Base16 Light</option>
+                    <option value="material-darker">Material Darker</option>
+                    <option value="material-palenight">Material PaleNight</option>
+                    <option value="material-ocean">Material Ocean</option>
+                    <option value="3024-day">3024-Day</option>
+                    <option value="3024-night">3024-Night</option>
+                    <option value="lucario">Lucario</option>
+                    <option value="neo">Neo</option>
+                    <option value="material">Material</option>
+                    <option value="paraiso-dark">Paraiso-Dark</option>
+                    <option value="paraiso-night">Paraiso-Night</option>
+                    <option value="ambiance">Ambiance</option>
+                    <option value="blackboard">BlackBoard</option>
+                    <option value="elegant">Elegant</option>
+                    <option value="railscasts">RailCasts</option>
+                    <option value="rubyblue">RubyBlue</option>
+                </select>
+                <label for="basic-url" class="form-label lead" style="padding: 12px;">Choose KeyBindings</label>
+                <select class="form-select" aria-label="Default select example" name="keybindings" id="keybindings">
+                    <option selected value="sublime">Sublime</option>
+                    <option value="vim">Vim</option>
+                    <option value="emacs">Emacs</option>
+                </select>
+                <label for="basic-url" class="form-label lead" style="padding: 12px;">Choose Your Font</label>
+                <select class="form-select" aria-label="Default select example" name="font" id="font">
+                    <option selected value="Oxygen Mono">Oxygen Mono</option>
+                    <option value="Cascadia Code">Cascadia Code</option>
+                    <option value="JetBrains Mono">JetBrains Mono</option>
+                    <option value="Fira Code">Fira Code</option>
+                </select>
+                <div style="text-align: center;">
+                    <button id="submit_btn" class="btn btn-outline-success" style="margin-top: 12px;">Continue <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" fill="#defece" /></svg></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Code Capture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-primary" id="preview_btn">Preview</button>
+                <div id="preview_code"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"><a href="" class="btn_link" download="{{ hash }}">Download</a></button>
+            </div>
+        </div>
+    </div>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closebrackets.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/comment/comment.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css">
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/xml/xml.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/matchtags.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/fold/xml-fold.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closetag.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/display/fullscreen.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/selection/active-line.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    {% if lang == "html" %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/css/css.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/htmlmixed/htmlmixed.js"></script>
+    {% set lang = "text/html" %}
+    {% else %}
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/{{ lang }}/{{ lang }}.js"></script>
+    {% endif %}
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/monokai.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='theme/'+ theme + '.css') }}"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/keymap/{{ keybindings }}.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#submit_btn").click(execFunc)
+            $("#div_resizer").change(function(){
+                $("#canvas").css("width", $("#div_resizer").val() + "%")
+            })
+            $("#convert").click(function(){
+                $("#form_content").html($("#editor_content").text())
+                console.log($("#form_content").val())
+            })
+        });
+        function execFunc(){
+            window.location = "/editor/lang=" + document.getElementById("language").value + "&theme=" + document.getElementById("theme").value + "&keybindings=" + document.getElementById("keybindings").value + "&font=" + document.getElementById("font").value;
+        }
+        const codemirrorEditor = CodeMirror.fromTextArea(document.getElementById('editor_content'), {
+            lineNumbers: true,
+            mode: "{{ lang }}",
+            theme: "{{ theme }}",
+            keymap: "{{ keybindings }}",
+            autoCloseBrackets: true,
+			matchTags: {bothTags: true},
+			extraKeys: {
+				"Ctrl-J": "toMatchingTag", 
+				"Ctrl-/": "toggleComment",
+				"F11": function(cm) {
+				    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+				},
+				"Esc": function(cm) {
+				    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+				}
+			},
+			autoCloseTags: true,
+			smartIndent: true,
+			cursorBlinkRate: 0,
+			cursorHeight: 1,
+            viewportMargin: Infinity,
+        });
+        codemirrorEditor.setSize("100%", "100%");
+        const three_dots = CodeMirror.fromTextArea(document.getElementById('three_dots'), {
+            theme: "{{ theme }}",
+            readOnly: false,
+            cursorBlinkRate: 0,
+            cursorHeight: 1,
+            viewportMargin: Infinity,       
+        });
+        three_dots.setSize("100%", "50%")
+        $(document).ready(function(){
+            $("#capture_btn").click(function(){
+                capture("canvas", "img_canvas");
+            });
+            function capture(src, target){
+                html2canvas($("#"+src)[0]).then( function (canvas) {
+                    var canvas_img = canvas.toDataURL("image/png");
+                    $("#"+target).attr("src", canvas_img);
+                    $(".btn_link").attr("href", canvas_img);
+                });
+            }
+        });
+        document.querySelector("#colorPicker").addEventListener("input", changeColor);
+        document.querySelector("#colorPicker1").addEventListener("input", changeColor)
+        var colorPicker = document.querySelector("#colorPicker")
+        var colorPicker1 = document.querySelector("#colorPicker1")
+        colorPicker.value = "#004cff"
+        colorPicker1.value = "#fa0505"
+        changeColor(false)
+        function changeColor(event) {
+            var canvas_color = document.getElementById("canvas");
+            canvas_color.style.background = "linear-gradient(to bottom, " + colorPicker.value + ", " + colorPicker1.value + ")";
+        };
+    </script>
+{% endblock %}

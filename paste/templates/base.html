@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>NoobPaste 🗒️ | Paste Away My Friend</title>
+    <meta name="title" content="NoobPaste 🗒️ | Paste Away My Friend">
+    <meta name="description" content="A Simple PasteBin inspired by pastebin.com, comes with a built in Editor">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://noobpaste.herokuapp.com/">
+    <meta property="og:title" content="NoobPaste 🗒️ | Paste Away My Friend">
+    <meta property="og:description" content="A Simple PasteBin inspired by pastebin.com, comes with a built in Editor">
+    <meta property="og:image" content="{{ url_for('static',filename='assets/icons/favicon.svg') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://noobpaste.herokuapp.com/">
+    <meta property="twitter:title" content="NoobPaste 🗒️ | Paste Away My Friend">
+    <meta property="twitter:description" content="A Simple PasteBin inspired by pastebin.com, comes with a built in Editor">
+    <meta property="twitter:image" content="{{ url_for('static',filename='assets/icons/favicon.svg') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/master.css') }}">
+    <script src= "{{ url_for('static',filename='js/brain.js') }}"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/testing.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/trumbowyg.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/ui/trumbowyg.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static',filename='assets/icons/favicon.svg') }}" type="image/x-icon">
+    <title>NoobPaste 🗒️ | Paste Away My Friend</title>
+</head>
+<head>
+    <script>if(!sessionStorage.getItem("_swa")&&document.referrer.indexOf(location.protocol+"//"+location.host)!== 0){fetch("https://counter.dev/track?"+new URLSearchParams({referrer:document.referrer,screen:screen.width+"x"+screen.height,user:"noobscience",utcoffset:"6"}))};sessionStorage.setItem("_swa","1");</script>
+</head>
+<nav class="navbar navbar-expand-lg navbar-dark navStyle">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"><span>
+            <img src="{{ url_for('static', filename='assets/icons/favicon.svg') }}" width="58" style="border-radius: 50%;">
+        </span> <span class="navTitle">NOOBPASTE</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="padding-left: 10%;">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- <li class="nav-item">
+                    <a class="nav-link link_nav hover_animation_underline" aria-current="page" href="/about"><span class="nav_text">API</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link_nav hover_animation_underline" href="/editor"><span class="nav_text">Editor</span></a>
+                </li> -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="nav_text">About</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/about">About</a></li>
+                        <li><a class="dropdown-item" href="/about#api">API</a></li>
+                        <li><a class="dropdown-item" href="/guide">Guide</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="https://github.com/newtoallofthis123/NoobPaste">GitHub</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="nav_text">Editor</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/editor">Beauty Editor</a></li>
+                        <li><a class="dropdown-item" href="/md_editor">Rich Text</a></li>
+                    </ul>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">{{ current_user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/authors/{{ current_user.username }}">Your Pastes</a></li>
+                            <li><a class="dropdown-item" href="/logout">LogOut</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/tos">Terms of Services</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">Account</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="/login">Login</a></li>
+                        <li><a class="dropdown-item" href="/register">Sign Up</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/tos">Terms of Services</a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<body id="body">
+    {% block body %} {% endblock %}
+</body>
+<footer style="background-color: #212121; padding: 1.2rem;">
+    <h2 class="title" style="text-align: center; font-size: 1.8rem; color: #f0f0f0;">Made with <i class="bi bi-heart"></i> and alot of <i class="bi bi-cup"></i> By 2022 <a href="https://newtoallofthis123.github.io/About" class="link" style="color: #ffec58; text-decoration: none;">NoobScience</a></h2>
+</footer>
+<script>
+    $(document).ready(function(){
+        var email = "{{ current_user.email }}"
+        $.ajax({
+            type: "post",
+            url: "/gravatar",
+            data: {"email": email},
+            dataType: "json",
+            success: function(response) {
+                $("#avatar_img").attr("src", response.src)
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+    })
+</script>
+</html>

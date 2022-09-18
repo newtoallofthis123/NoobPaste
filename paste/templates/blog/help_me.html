@@ -1,0 +1,39 @@
+<title>Help Wanted! | Blog</title>
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="error_div">
+	<h2 class="title">Sorry, Site Optimized for desktop! Enable in desktop mode!</h2>
+</div>
+<div class="article_div">
+	<h2 class="title" style="text-align: center;">Okay! I need help!</h2>
+	<h2 class="title" style="text-align: center;">Edit: ✔ Solved Problem!</h2>
+	<p class="main_text text_div">TL;DR: I basically solved it by storing decrypted content on the database and encoding it before decoding.</p>
+	<p class="main_text text_div">
+		Okay I did an oppsie! I recently decided to implement a censor and flask-admin into NoobPaste.
+		This was because the pastes in NoobPaste were well, I discovered a few bad ones. The censor is inbuilt into NoobPaste using regex.
+		So no worries there. At first all the content on NoobPaste on NoobPaste was unencrypted. This was already said in the about section.
+		Password hashing already existed in user <a href="/login" class="link">login</a> but not in paste passwords. So I have implemented it. Now the way password hashing works is hashing a string always returns the same value.
+		So instead of comparing strings, we compare the string hashes.
+	</p>
+	<div class="img_div"><img src="{{ url_for('static', filename='assets/blog_assets/help_me_1.png') }}" alt="content_example"></div>
+	<p class="main_text text_div">
+		Yeah. So this is the problem. Now, If I actually try the good old fernet encryption. So what I came up with was that when you first create the paste,
+		both the paste content and key get stored in the same row. So when you access the paste, it passes in the key from the database to decrypt it using the key. But it throws me this error.
+	</p>
+	<div class="img_div"><img src="{{ url_for('static', filename='assets/blog_assets/help_me_2.png') }}" alt="content_example"></div>
+	<p class="main_text text_div">
+		So if you curious to know how I actually implement it, it is showcased in the code below
+	</p>
+	<div class="img_div"><img src="{{ url_for('static', filename='assets/blog_assets/help_me_3.png') }}" width="80%" alt="content_example"></div>
+	<p class="main_text text_div">
+		So here's where I need your help! Can you please find a way to make the decryption possible. Please help me make NoobPaste secure and private. NoobPaste it open source. So you can get the source code from there. Any help would be appreciated.
+	</p>
+	<div class="img_div">
+		<button class="btn btn-info"><a href="https://github.com/newtoallofthis123/NoobPaste" class="btn_link"> <i class="bi bi-github"></i> GitHub</a></button>
+		<button class="btn btn-warning"><a href="mailto:noobscience123@gmail.com" class="btn_link"> <i class="bi bi-envelope"></i> Gmail</a></button>
+	</div>
+</div>
+
+{% endblock %}

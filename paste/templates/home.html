@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="{{ url_for('static',filename='css/python_styles.css') }}">
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="home">
+        <!-- <div style="margin-right: 12%; margin-left: 12%; padding-top: 2%; text-align: center;">
+            <img src="{{ url_for('static',filename='assets/icons/text_icon.svg') }}" alt="">
+        </div> -->
+        <h1 class="main_title">Paste and Forget!</h1>
+    </div>
+    <div class="main_text" style="text-align: center;">
+        {% if author == "None" %}
+        Create Your Paste Now!
+        {% else %}
+        {{ author }}! You Last Shortened <a href="/{{ latest_url }}" class="link">/{{ latest_url }}</a>
+        {% endif %}
+    </div>
+    <form action="/create_temp" method="post" id="language_select" style="margin-top: 1.2rem;">
+        <select class="form-select" aria-label="Default select example" id="lang_form" name="language">
+            <option selected>✨ Just Select a Language and Start Writing!</option>
+            <option value="python">Python: 🐍 Python is an Awesome Choice</option>
+            <option value="javascript">Javascript: Console.log("Use Me!")</option>
+            <option value="html">HTML: I am not an actual language, but um 🤷🏻‍♂️</option>
+            <option value="css">CSS: I'm so pretty 💋</option>
+            <option value="markdown">Markdown: Standard as a rock </option>
+            <option value="text">Text: I'm old 👴🏻</option>
+            <option value="lua">Lua: Who's Python ❔</option>
+            <option value="java">Java: I Like Minecraft ⛏!</option>
+            <option value="sql">SQL: I Stor Stuff 💾</option>
+            <option value="php">PHP: Who am I ❔</option>
+            <option value="xml">XML: What am I?</option>
+            <option value="cpp">C++: I'm Fun 🏈!</option>
+            <option value="rust">Rust: Who Likes the terminal 💲</option>
+            <option value="powershell">Powershell: I Love Windows 💻</option>
+            <option value="vbscript">VBScript: Am I a virus? 🦠</option>
+            <option value="toml">TOML: Pip Install Me! 🐍</option>
+            <option value="swift">Swift: Apple would be proud 🍎</option>
+            <option value="shell">Shell: Bash Stuff!</option>
+            <option value="ruby">Ruby: I'm So Precious✨</option>
+            <option value="perl">Perl: I'm Better Than Python!</option>
+            <option value="jsx">JSX: I have no idea about myself 👀</option>
+            <option value="go">go: Let's go!</option>
+        </select>
+        <div style="text-align: center;">
+            <button type="submit" id="language_btn">Continue <i class="bi bi-arrow-right"></i></button>
+        </div>
+    </form>
+	<h3 class="main_text" style="text-align: center; padding: 1.2rem;">Try out The Rich Text <a href="/md_editor" class="link">Editor</a><span class="badge bg-warning" style="margin-left: 12px;">New!</span></h3>
+    <h2 class="title" style="text-align: center;">NoobPaste is Awesome To Use!</h2>
+    <div class="container background" style="padding-top: 4%; padding-bottom: 4%; margin-top: 12px; margin-bottom: 2%;">
+        <div class="row">
+            <div class="col-sm" style="padding-left: 4.4%;">
+                <div class="card" style="width: 20rem; border-radius: 24px;">
+                    <img src="{{ url_for('static',filename='assets/svg/loving.svg') }}" class="card-img-top main_img" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Open Source at Heart ❤</h5>
+                        <p class="card-text">
+                            NoobPaste is completely open source and it is licensed under <a href="" class="link">MIT</a>. NoobPaste is actively developed on GitHub. You are free to fork it or contribute. NoobPaste's code is readable and is in easily understandable syntax. 
+                        </p>
+                        <a href="https://github.com/newtoallofthis123/NoobPaste" class="btn btn-secondary">Contribute Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="card" style="width: 20rem; border-radius: 24px;">
+                    <img src="{{ url_for('static',filename='assets/svg/dog-jump.svg') }}" class="card-img-top main_img" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Easy and Fun 🎉</h5>
+                        <p class="card-text">
+                            NoobPaste is very easy and fun. It has a very intuitive interface and is just out of the box.
+                            You can easily <a href="/register" class="link">signup</a> for NoobPaste and have access to custom urls and file reading.
+                            NoobPaste also offers a microsoft word like <a href="/md_editor" class="link">editor</a>.
+                        </p>
+                        <a href="/register" class="btn btn-secondary">Sign Up!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="card" style="width: 20rem; border-radius: 24px;">
+                    <img src="{{ url_for('static',filename='assets/svg/Meditating.svg') }}" class="card-img-top main_img" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Rest Assured 👴🏻</h5>
+                        <p class="card-text">
+                            NoobPaste is extremly secure and it is hosted on heroku. NoobPaste is written in python and using flask module. NoobPaste also offers password protection. NoobPaste is in it's early stages so please don't store anything sensitive. 
+                        </p>
+                        <a href="/create/text" class="btn btn-secondary">Start Now!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 class="title" style="text-align: center;">TLDR NoobPaste</h2>
+    <p class="main_text text_div">
+        Sharing Code has never been easier and more simpler then this. NoobPaste is a simple flask application written in python and hosted on heroku. It is fast, private and secure. 
+        NoobPaste posts your data onto a secure database and it is very secure and easy to use. NoobPaste uses simple point one to point two redirect. This means not much javascript is used.
+        NoobPaste uses <a href="https://codemirror.net" class="link">CodeMirror</a> for syntax highlighting and uses it's CDN for fast delivery. NoobPaste is open source and it's development is active on <a href="https://github.com/newtoallofthis123/NoobPaste" class="link"><i class="bi bi-github"></i>GitHub</a>.
+        You can sign in to NoobPaste to unlock some extra features but this is completely private. 
+    </p>
+    <div class="container end_div">
+        <div class="row">
+            <div class="col-sm">
+                <div>
+                    <h2 class="title">NoobPaste is Free for Life!</h2>
+                    <p class="main_text">You don't have to give me a dime 💵</p>
+                    <p class="main_text">And you get tons of other stuff ✨</p>
+                    <p class="main_text">My 🐶 Dog Recommends it!</p>
+                    <button class="btn btn-primary"><a href="/create/text" class="btn_link">Create a Paste Today!</a></button><p></p>
+                    <button class="btn btn-primary"><a href="/blog" class="btn_link">Read The NoobPaste Blog</a></button>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div>
+                    <img src="{{ url_for('static',filename='assets/svg/Doggie.svg') }}" alt="..." style="width: 95%; height: 95%;">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated %}
+        <input type="hidden" id="login" value="false">
+    {% else %}
+        <input type="hidden" id="login" value="{{ login }}">
+    {% endif %}
+    <script>
+        $(document).ready(function(){
+            var login = $("#login").val()
+            if (login == "true"){
+                login_confirm = confirm("Login Credentials in Cookies Found! Do you want to login?")
+                if (login_confirm){
+                    $.ajax({
+                        type: "get",
+                        url: "/alt_login",
+                        success: function(response) {
+                            alert("Logged in successfully")
+                            location.reload()
+                        },
+                        error: function(err) {
+                            alert("This was the error: " + err);
+                        }
+                    });
+                }
+            }
+        })
+    </script>
+{% endblock %}

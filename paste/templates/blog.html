@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}	
+
+<h2 class="main_title">NoobPaste Blog</h2>
+<p class="main_text text_div">
+	The Official Blog of <a href="/" class="link">NoobPaste</a>.
+</p>
+<div class="container end_div">
+    <div class="row">
+        <div class="col-sm">
+            <div>
+                <h2 class="title">Read The Latest!🎉</h2>
+                <p class="main_text">A Development Log of NoobPase.</p>
+                <p class="main_text">Follow to Keep Track!</p>
+                <button class="btn btn-outline-light"><a href="/blog/help_me" class="btn_link">Read The Latest Entry: Help Me!</a></button><p></p>
+                <button class="btn btn-primary"><a href="/blog/archive" class="btn_link">Archive</a></button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div>
+                <img src="{{ url_for('static',filename='assets/svg/reading.svg') }}" alt="..." style="width: 95%; height: 95%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

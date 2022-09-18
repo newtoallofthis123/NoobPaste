@@ -1,0 +1,19 @@
+{%  extends 'base.html' %}
+
+{% block body %}
+<h2 class="sub_heading text" style="text-align: center;">Hey {{ author }}! Hope You are enjoying NoobPaste!</h2>
+<div class="container-fluid">
+	<div class="author_div">
+		<div class="row">
+			{% for post in posts %}
+			<h2 class="display-3 text">{{ post.title }}</h2>
+			<p style="color: #f50707;"><span class="lead text">Author: </span><span class="lead text">{{ post.author }}</span></p>
+			<p style="color: #0d79f5;"><span class="lead text">Time: </span><span class="lead text">{{ post.time }}</span></p>
+			<p style="color: #ecb009;"><span class="lead text">hash: </span><a href="/{{ post.hash }}" class="link">{{ post.hash }}</a></p>
+			<p class="lead text" style="text-align: center;">---------------------------------</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}
