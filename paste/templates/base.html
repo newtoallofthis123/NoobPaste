@@ -48,7 +48,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent" style="padding-left: 10%;">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav_stuff">
                 <!-- <li class="nav-item">
                     <a class="nav-link link_nav hover_animation_underline" aria-current="page" href="/about"><span class="nav_text">API</span></a>
                 </li>
@@ -56,7 +56,7 @@
                     <a class="nav-link link_nav hover_animation_underline" href="/editor"><span class="nav_text">Editor</span></a>
                 </li> -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link link_nav dropdown-toggle nav_encap" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="nav_text">About</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -68,7 +68,7 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link link_nav dropdown-toggle nav_encap" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="nav_text">Editor</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -77,9 +77,9 @@
                     </ul>
                 </li>
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown nav_encap">
                         <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">{{ current_user.username }}</span>
+                            <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="32" height="32" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">{{ current_user.username }}</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="/authors/{{ current_user.username }}">Your Pastes</a></li>
@@ -89,9 +89,9 @@
                         </ul>
                     </li>
                 {% else %}
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown nav_encap">
                     <a class="nav-link link_nav dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="44" height="44" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">Account</span>
+                        <img src="{{ url_for('static', filename='assets/icons/user.svg')  }}" alt="noobscience avatar" width="32" height="32" style="border-radius: 50%;" id="avatar_img" ><span class="nav_text">Account</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="/login">Login</a></li>
