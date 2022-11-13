@@ -422,6 +422,29 @@ def get(hash):
         else:
             return jsonify("Sorry, paste is password protected. Try opening it in the browser with noobpaste")
 
+
+@app.route('/post', methods=['POST'])
+def post():
+    input = request.values
+    if "title" and "author" and "content" and "lang" in input:
+        if "password" in input:
+            paste_info = add_to_db(
+                input["title"], input["content"], input["author"], input["lang"], input["password"])
+        else:
+            paste_info = add_to_db(
+                input["title"], input["content"], input["author"], input["lang"], "None")
+        results = {
+            "title": paste_info["title"],
+            "author": paste_info["author"],
+            "hash": paste_info["hash"],
+            "content": decrypt(paste_info["content"], paste_info["key"]),
+            "lang": paste_info["lang"],
+            "time": time_cal()
+        }
+        return results
+    else:
+        return jsonify("Please check if you have the mandatory argument 'title', 'author', 'content' and 'lang'")
+
 # @app.errorhandler(404)
 # def not_found_error(error):
 #     return render_template("error.html", error_code=404)
