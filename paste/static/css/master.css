@@ -4,13 +4,13 @@
 
 ::-moz-selection {
     /* Code for Firefox */
-    color: #ECECF2;
-    background: #1A15F0;
+    color: #000000;
+    background: #efdc0b;
 }
 
 ::selection {
-    color: #ECECF2;
-    background: #1A15F0;
+    color: #000000;
+    background: #efdc0b;
 }
 
 #body {
@@ -144,9 +144,6 @@ option {
     font-family: 'Poiret One', sans-serif;
     font-size: 5.6rem;
     color: var(--primary_color);
-    background: -webkit-linear-gradient(#1f2020, #222423);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     text-align: center;
     padding: 1.8rem;
 }

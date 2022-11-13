@@ -34,16 +34,6 @@ def about():
     return render_template('about.html', ran_fact=ran_fact(), api_content=api_content)
 
 
-@app.route('/blog')
-def blog():
-    return render_template("blog.html", ran_quote=ran_quote())
-
-
-@app.route('/blog/<blob>')
-def blog_article(blob):
-    return render_template(f'blog/{blob}.html', ran_quote=ran_quote())
-
-
 @app.route('/<hash>')
 def paste_shortcut(hash):
     paste_info = get_db(hash)
@@ -392,23 +382,6 @@ def send_email():
     return "Done"
 
 
-@app.route('/subscribe_news_letter', methods=["post"])
-@cross_origin(supports_credentials=True)
-def subscribe_news_letter():
-    email = request.values.get("email")
-    news_letter_info = news_letter(email)
-    return "Done"
-
-
-@app.route('/send_news_letter', methods=["post"])
-@cross_origin(supports_credentials=True)
-def news_letter():
-    title = request.values.get("title")
-    content = request.values.get("content")
-    news_letter = send_news_letter(title, content)
-    return "Done"
-
-
 @app.route('/docs')
 def docs():
     return render_template('docs.html', ran_quote=ran_quote())
@@ -421,6 +394,33 @@ def gravatar():
     gravatar_url = jsonify(
         {"src": f'https://www.gravatar.com/avatar/{gravatar_hash}?s=200'})
     return gravatar_url
+
+
+@app.route('/get/<hash>', methods=['GET'])
+def get(hash):
+    paste_info = get_db(hash)
+    if paste_info == "No Such Paste":
+        return jsonify("No Such Paste Found")
+    else:
+        if paste_info.password == "None":
+            url = "https://noobpaste.herokuapp.com/paste/" + paste_info.hash
+            short_url = tinyurl(url)
+            shortpaw_url = shortpaw(url)
+            qr_code_engine(short_url)
+            decrypted_content = decrypt(paste_info.content, paste_info.key)
+            result = {
+                "title": paste_info.title,
+                "author": paste_info.author,
+                "hash": paste_info.hash,
+                "lang": paste_info.lang,
+                "content": decrypted_content,
+                "short_url": short_url,
+                "url": url,
+                "time": paste_info.time
+            }
+            return jsonify(result)
+        else:
+            return jsonify("Sorry, paste is password protected. Try opening it in the browser with noobpaste")
 
 # @app.errorhandler(404)
 # def not_found_error(error):
